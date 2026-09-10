@@ -41,6 +41,8 @@ export async function handleSharedItem(request: Request, env: Env, id: string): 
       // link can't keep being served from an edge cache past its TTL.
       "cache-control": "private, max-age=3600",
       "x-content-type-options": "nosniff",
+      // CORS for cross-origin access (e.g. from chat app)
+      "access-control-allow-origin": "*",
     },
   });
 }
