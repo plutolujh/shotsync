@@ -181,7 +181,8 @@ async function openFull(id, roomId) {
   txt.textContent = ""; txt.classList.add("hidden");
   v.classList.remove("hidden");
   try {
-    const res = await fetch("/i/" + id + "?size=full&room=" + encodeURIComponent(roomId), { headers: authHeaders() });
+    const imgUrl = "/i/" + id + "?size=full" + (roomId ? "&room=" + encodeURIComponent(roomId) : "");
+    const res = await fetch(imgUrl, { headers: authHeaders() });
     if (!res.ok) return;
     const ct = res.headers.get("content-type") || "";
     if (ct.indexOf("text/") === 0) {
@@ -317,18 +318,21 @@ async function fetchPage(c) {
 async function loadThumb(img) {
   const id = img.dataset.id;
   const roomId = img.dataset.roomId;
+  const url = "/i/" + id + "?size=thumb" + (roomId ? "&room=" + encodeURIComponent(roomId) : "");
   try {
-    const res = await fetch("/i/" + id + "?size=thumb&room=" + encodeURIComponent(roomId), { headers: authHeaders() });
+    const res = await fetch(url, { headers: authHeaders() });
     if (!res.ok) return;
-    const url = URL.createObjectURL(await res.blob());
-    img.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
-    img.src = url;
+    const blobUrl = URL.createObjectURL(await res.blob());
+    img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
+    img.src = blobUrl;
   } catch {}
 }
 
 async function loadTextSnippet(card) {
+  const roomId = card.dataset.roomId;
+  const url = "/i/" + card.dataset.id + (roomId ? "?room=" + encodeURIComponent(roomId) : "");
   try {
-    const res = await fetch("/i/" + card.dataset.id + "?room=" + encodeURIComponent(card.dataset.roomId), { headers: authHeaders() });
+    const res = await fetch(url, { headers: authHeaders() });
     if (!res.ok) return;
     card.textContent = (await res.text()).slice(0, 140);
   } catch {}

@@ -15,9 +15,10 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
   }
 
   // Get room ID from header (required for isolation)
-  const roomId = request.headers.get("x-room-id");
-  if (!roomId || !/^[a-zA-Z0-9_-]{1,64}$/.test(roomId)) {
-    return err(400, "x-room-id header required (1-64 alphanumeric chars)");
+  // If not provided (gallery use case), use default room "gallery"
+  const roomId = request.headers.get("x-room-id") || "gallery";
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(roomId)) {
+    return err(400, "x-room-id must be 1-64 alphanumeric chars (or omit for default gallery room)");
   }
 
   // Duck-type the File: `form.get()` returns `string | File | null`, and TS strict
