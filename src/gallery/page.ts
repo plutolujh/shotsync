@@ -171,16 +171,17 @@ $("#logoutBtn").onclick = () => {
 // Task 10-12 implementation:
 
 // Full viewer: shows an image or a text item, with delete + save/copy
-let currentId = null, currentKind = "image";
+let currentId = null, currentRoomId = null, currentKind = "image";
 
-async function openFull(id) {
+async function openFull(id, roomId) {
   currentId = id;
+  currentRoomId = roomId;
   const v = $("#viewer"), img = $("#viewerImg"), txt = $("#viewerText");
   img.removeAttribute("src"); img.classList.add("hidden");
   txt.textContent = ""; txt.classList.add("hidden");
   v.classList.remove("hidden");
   try {
-    const res = await fetch("/i/" + id + "?size=full", { headers: authHeaders() });
+    const res = await fetch("/i/" + id + "?size=full&room=" + encodeURIComponent(roomId), { headers: authHeaders() });
     if (!res.ok) return;
     const ct = res.headers.get("content-type") || "";
     if (ct.indexOf("text/") === 0) {
@@ -208,7 +209,7 @@ document.querySelector("#closeBtn").onclick = () => document.querySelector("#vie
 document.querySelector("#shareBtn").onclick = async () => {
   if (!currentId) return;
   try {
-    const res = await fetch("/api/share/" + currentId, { method: "POST", headers: authHeaders() });
+    const res = await fetch("/api/share/" + currentId + "?room=" + encodeURIComponent(currentRoomId), { method: "POST", headers: authHeaders() });
     if (!res.ok) { toast("生成链接失败"); return; }
     const { url } = await res.json();
     try {
@@ -230,7 +231,7 @@ document.querySelector("#saveBtn").onclick = async () => {
     return;
   }
   try {
-    const res = await fetch("/i/" + currentId + "?size=full", { headers: authHeaders() });
+    const res = await fetch("/i/" + currentId + "?size=full&room=" + encodeURIComponent(currentRoomId), { headers: authHeaders() });
     if (!res.ok) { toast(DEMO_EN ? "Save failed" : "保存失败"); return; }
     const blob = await res.blob();
     const ext = (blob.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
@@ -251,7 +252,7 @@ document.querySelector("#saveBtn").onclick = async () => {
 
 document.querySelector("#delBtn").onclick = async () => {
   if (!currentId || !confirm("删除这条？")) return;
-  const res = await fetch("/api/img/" + currentId, { method: "DELETE", headers: authHeaders() });
+  const res = await fetch("/api/img/" + currentId + "?room=" + encodeURIComponent(currentRoomId), { method: "DELETE", headers: authHeaders() });
   if (res.ok) {
     const cell = document.querySelector('#grid [data-id="' + currentId + '"]');
     if (cell) cell.remove();
@@ -292,10 +293,11 @@ async function deleteSelected() {
   let ok = 0;
   await Promise.all(ids.map(async (id) => {
     try {
-      const res = await fetch("/api/img/" + id, { method: "DELETE", headers: authHeaders() });
+      const cell = document.querySelector('#grid [data-id="' + id + '"]');
+      const roomId = cell ? cell.dataset.roomId : "";
+      const res = await fetch("/api/img/" + id + "?room=" + encodeURIComponent(roomId), { method: "DELETE", headers: authHeaders() });
       if (res.ok) {
         ok++;
-        const cell = document.querySelector('#grid [data-id="' + id + '"]');
         if (cell) cell.remove();
         knownIds.delete(id);
       }
@@ -314,8 +316,9 @@ async function fetchPage(c) {
 
 async function loadThumb(img) {
   const id = img.dataset.id;
+  const roomId = img.dataset.roomId;
   try {
-    const res = await fetch("/i/" + id + "?size=thumb", { headers: authHeaders() });
+    const res = await fetch("/i/" + id + "?size=thumb&room=" + encodeURIComponent(roomId), { headers: authHeaders() });
     if (!res.ok) return;
     const url = URL.createObjectURL(await res.blob());
     img.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
@@ -325,7 +328,7 @@ async function loadThumb(img) {
 
 async function loadTextSnippet(card) {
   try {
-    const res = await fetch("/i/" + card.dataset.id, { headers: authHeaders() });
+    const res = await fetch("/i/" + card.dataset.id + "?room=" + encodeURIComponent(card.dataset.roomId), { headers: authHeaders() });
     if (!res.ok) return;
     card.textContent = (await res.text()).slice(0, 140);
   } catch {}
@@ -335,6 +338,7 @@ function makeCell(item) {
   const isText = (item.contentType || "").indexOf("text/") === 0;
   const el = document.createElement(isText ? "div" : "img");
   el.dataset.id = item.id;
+  el.dataset.roomId = item.roomId || "";
   el.dataset.kind = isText ? "text" : "image";
   if (isText) {
     el.className = "txtcell";
@@ -343,7 +347,7 @@ function makeCell(item) {
     // server did not inline (past MAX_INLINE_SNIPPETS, or a failed read).
     el.textContent = item.snippet || "…";
   }
-  el.onclick = () => { if (selectMode) toggleSelect(el); else openFull(item.id); };
+  el.onclick = () => { if (selectMode) toggleSelect(el); else openFull(item.id, item.roomId); };
   // Nothing left to load for a text card that already has its snippet —
   // observing it would fire one pointless request per card.
   if (!(isText && item.snippet)) contentObserver.observe(el);

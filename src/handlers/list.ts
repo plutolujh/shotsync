@@ -1,6 +1,6 @@
 import { Env, err, json } from "../responses";
 import { canRead } from "../auth";
-import { epochMsFromId, idFromFullKey } from "../ids";
+import { epochMsFromId, idFromFullKey, roomIdFromKey } from "../ids";
 
 // How many text previews one list call will read inline. Bounded on purpose: a
 // pool that is entirely text would otherwise turn a single list request into
@@ -32,9 +32,11 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
 
   const items = res.objects.map((o) => {
     const id = idFromFullKey(o.key);
+    const roomId = roomIdFromKey(o.key);
     return {
       id,
       key: o.key,
+      roomId,
       time: epochMsFromId(id),
       contentType: o.httpMetadata?.contentType || "application/octet-stream",
       hasThumb: o.customMetadata?.hasThumb === "true",
