@@ -1,11 +1,11 @@
 import { Env, err } from "../responses";
 import { canRead } from "../auth";
-import { FULL_EXTS, thumbKey } from "../ids";
+import { FULL_EXTS, fullKey, thumbKey } from "../ids";
 
 // Try to find full image with one of the supported extensions
-export async function getFull(env: Env, id: string): Promise<R2ObjectBody | null> {
+export async function getFull(env: Env, roomId: string, id: string): Promise<R2ObjectBody | null> {
   for (const ext of FULL_EXTS) {
-    const obj = await env.BUCKET.get(`full/${id}.${ext}`);
+    const obj = await env.BUCKET.get(fullKey(roomId, id, ext));
     if (obj) return obj;
   }
   return null;
@@ -15,16 +15,20 @@ export async function handleImage(request: Request, env: Env, id: string): Promi
   // Check authentication
   if (!canRead(request, env)) return err(401, "unauthorized");
 
+  // Get room ID from query param
+  const roomId = new URL(request.url).searchParams.get("room");
+  if (!roomId) return err(400, "room query param required");
+
   // Get size parameter from query string
   const size = new URL(request.url).searchParams.get("size");
 
   let obj: R2ObjectBody | null = null;
 
   // If size=thumb is requested, try to fetch thumb
-  if (size === "thumb") obj = await env.BUCKET.get(thumbKey(id));
+  if (size === "thumb") obj = await env.BUCKET.get(thumbKey(roomId, id));
 
   // Fall back to full image if thumb not found or not requested
-  if (!obj) obj = await getFull(env, id);
+  if (!obj) obj = await getFull(env, roomId, id);
 
   // Return 404 if nothing found
   if (!obj) return err(404, "not found");

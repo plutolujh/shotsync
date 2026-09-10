@@ -5,27 +5,34 @@ import { getFull } from "./image";
 
 const SHARE_TTL_MS = 7 * 24 * 3600 * 1000; // links live 7 days
 
-// POST /api/share/<id> (authed) -> mint a public, signed, expiring URL for one item.
+// POST /api/share/<roomId>/<id> (authed) -> mint a public, signed, expiring URL for one item.
 export async function handleShareCreate(request: Request, env: Env, id: string): Promise<Response> {
   if (!isAuthed(request, env)) return err(401, "unauthorized");
+
+  // Get room ID from query param
+  const roomId = new URL(request.url).searchParams.get("room");
+  if (!roomId) return err(400, "room query param required");
+
   const exp = Date.now() + SHARE_TTL_MS;
   // Signing key is AUTH_TOKEN: rotating it immediately invalidates ALL live share links.
   const sig = await signShare(id, exp, env.AUTH_TOKEN);
   const origin = new URL(request.url).origin;
-  const url = `${origin}/s/${encodeURIComponent(id)}?exp=${exp}&sig=${sig}`;
+  const url = `${origin}/s/${encodeURIComponent(id)}?exp=${exp}&sig=${sig}&room=${encodeURIComponent(roomId)}`;
   return json({ url, exp });
 }
 
-// GET /s/<id>?exp=&sig=  (public, no token) -> serve the one signed item.
+// GET /s/<id>?exp=&sig=&room=  (public, no token) -> serve the one signed item.
 export async function handleSharedItem(request: Request, env: Env, id: string): Promise<Response> {
   const q = new URL(request.url).searchParams;
   const exp = Number(q.get("exp"));
   const sig = q.get("sig") || "";
+  const roomId = q.get("room") || "";
   if (!exp || Date.now() > exp) return err(410, "link expired");
+  if (!roomId) return err(400, "room param required");
   if (!env.AUTH_TOKEN || !(await verifyShare(id, exp, sig, env.AUTH_TOKEN))) {
     return err(403, "invalid signature");
   }
-  const obj = await getFull(env, id);
+  const obj = await getFull(env, roomId, id);
   if (!obj) return err(404, "not found");
   return new Response(obj.body, {
     headers: {

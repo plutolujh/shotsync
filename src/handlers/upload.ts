@@ -14,6 +14,12 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
     return err(400, "expected multipart/form-data");
   }
 
+  // Get room ID from header (required for isolation)
+  const roomId = request.headers.get("x-room-id");
+  if (!roomId || !/^[a-zA-Z0-9_-]{1,64}$/.test(roomId)) {
+    return err(400, "x-room-id header required (1-64 alphanumeric chars)");
+  }
+
   // Duck-type the File: `form.get()` returns `string | File | null`, and TS strict
   // rejects `instanceof File` on that union (TS2358), so narrow by shape instead.
   const fullEntry = form.get("full");
@@ -38,19 +44,20 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
     origName: request.headers.get("x-filename") || full.name || "",
     uploadedAt: new Date().toISOString(),
     hasThumb: String(hasThumb),
+    roomId: roomId,
   };
 
-  await env.BUCKET.put(fullKey(id, ext), full.stream(), {
+  await env.BUCKET.put(fullKey(roomId, id, ext), full.stream(), {
     httpMetadata: { contentType: full.type },
     customMetadata: meta,
   });
 
   if (hasThumb) {
     const thumb = thumbEntry as Blob;
-    await env.BUCKET.put(thumbKey(id), thumb.stream(), {
+    await env.BUCKET.put(thumbKey(roomId, id), thumb.stream(), {
       httpMetadata: { contentType: "image/jpeg" },
     });
   }
 
-  return json({ id });
+  return json({ id, roomId });
 }

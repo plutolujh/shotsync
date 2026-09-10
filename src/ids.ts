@@ -22,18 +22,26 @@ export function epochMsFromId(id: string): number {
   return INV_BASE - inv;
 }
 
-export function fullKey(id: string, ext: string): string {
-  return `full/${id}.${ext}`;
+export function fullKey(roomId: string, id: string, ext: string): string {
+  return `full/${roomId}/${id}.${ext}`;
 }
 
-export function thumbKey(id: string): string {
-  return `thumb/${id}.jpg`;
+export function thumbKey(roomId: string, id: string): string {
+  return `thumb/${roomId}/${id}.jpg`;
 }
 
 export function idFromFullKey(key: string): string {
-  const name = key.slice("full/".length);
+  // Key format: full/<roomId>/<id>.<ext>
+  const parts = key.split("/");
+  const name = parts[parts.length - 1];
   const dot = name.lastIndexOf(".");
   return dot === -1 ? name : name.slice(0, dot);
+}
+
+export function roomIdFromKey(key: string): string {
+  // Key format: full/<roomId>/<id>.<ext> or thumb/<roomId>/<id>.jpg
+  const parts = key.split("/");
+  return parts.length >= 3 ? parts[1] : "";
 }
 
 export function randSuffix(): string {
