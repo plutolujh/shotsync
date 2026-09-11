@@ -6,7 +6,7 @@ const LANG_KEY = "shotsync_lang";
 
 function buildHTML(demo: boolean, demoEn: boolean): string {
   const lang: Lang = demo && demoEn ? "en" : "zh";
-  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:8px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a;flex-wrap:wrap}header h1{font-size:16px;margin:0;flex:1;min-width:60px}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}#viewerPdf{flex:1;min-height:0}#viewerDoc{flex:1;min-height:0}#viewerVideo{flex:1;min-height:0;max-height:100%;object-fit:contain;width:100%}#filterBar{display:flex;gap:4px;align-items:center}#filterBar select{background:#333;color:#eee;border:1px solid #444;border-radius:6px;padding:6px 8px;font-size:13px;cursor:pointer}#filterBar select:focus{outline:none;border-color:#2b6cff}#grid .videocell{position:relative;width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;overflow:hidden}#grid .videocell img{width:100%;height:100%;object-fit:cover}#grid .videocell::after{content:"▶";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)}#grid .videocell:hover::after{font-size:28px}#grid.small-view .videocell::after{font-size:16px}#grid.list-view .videocell::after{display:none}`;
+  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:8px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a;flex-wrap:wrap}header h1{font-size:16px;margin:0;flex:1;min-width:60px}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}#viewerPdf{flex:1;min-height:0}#viewerDoc{flex:1;min-height:0}#viewerVideo{flex:1;min-height:0;max-height:100%;object-fit:contain;width:100%}#filterBar{display:flex;gap:4px;align-items:center}#filterBar select{background:#333;color:#eee;border:1px solid #444;border-radius:6px;padding:6px 8px;font-size:13px;cursor:pointer}#filterBar select:focus{outline:none;border-color:#2b6cff}#sortHeader{display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 8px;background:#333;border:1px solid #444;border-radius:6px;font-size:13px;color:#eee;user-select:none}#sortHeader:hover{background:#444}#sortHeader.asc::after{content:" ▲"}#sortHeader.desc::after{content:" ▼"}#grid .videocell{position:relative;width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;overflow:hidden}#grid .videocell img{width:100%;height:100%;object-fit:cover}#grid .videocell::after{content:"▶";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)}#grid .videocell:hover::after{font-size:28px}#grid.small-view .videocell::after{font-size:16px}#grid.list-view .videocell::after{display:none}`;
   return /* html */ `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -37,11 +37,7 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
         <option value="text">${i18n[lang]["filter.text"]}</option>
         <option value="doc">${i18n[lang]["filter.doc"]}</option>
       </select>
-      <select id="sortFilter" title="Sort">
-        <option value="newest">${i18n[lang]["sort.newest"]}</option>
-        <option value="oldest">${i18n[lang]["sort.oldest"]}</option>
-        <option value="name">${i18n[lang]["sort.name"]}</option>
-      </select>
+      <div id="sortHeader" class="desc">${i18n[lang]["sort.time"]}</div>
     </div>
     <input id="fileInput" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.html,.css,.js,.json,.xml,.zip" multiple class="hidden">
     <button id="textBtn" style="background:#444" data-i18n="header.text">${i18n[lang]["header.text"]}</button>
@@ -332,7 +328,7 @@ let itemsById = new Map();
 let contentObserver;
 let videoThumbs = new Set();
 let currentFilter = localStorage.getItem("shotsync_filter") || "all";
-let currentSort = localStorage.getItem("shotsync_sort") || "newest";
+let sortAsc = localStorage.getItem("shotsync_sort") === "asc";
 
 // Multi-select
 let selectMode = false; const selected = new Set();
@@ -375,7 +371,9 @@ async function fetchPage(c) {
   if (c) params.set("cursor", c);
   params.set("limit", "40");
   params.set("type", currentFilter);
-  params.set("sort", currentSort);
+  // For time-based sorting: newest=oldest order (asc=false means newest first from R2)
+  // Click toggles asc/desc. asc=true means oldest first, asc=false means newest first
+  params.set("sort", sortAsc ? "oldest" : "newest");
   const res = await fetch("/api/list?" + params.toString(), { headers: authHeaders() });
   if (!res.ok) throw new Error("list failed");
   return res.json();
@@ -558,15 +556,18 @@ async function initFeed() {
 
   // Setup filter/sort
   $("#typeFilter").value = currentFilter;
-  $("#sortFilter").value = currentSort;
+  // Update sort header appearance
+  const sortHeader = $("#sortHeader");
+  sortHeader.className = sortAsc ? "asc" : "desc";
   $("#typeFilter").onchange = () => {
     currentFilter = $("#typeFilter").value;
     localStorage.setItem("shotsync_filter", currentFilter);
     initFeed();
   };
-  $("#sortFilter").onchange = () => {
-    currentSort = $("#sortFilter").value;
-    localStorage.setItem("shotsync_sort", currentSort);
+  sortHeader.onclick = () => {
+    sortAsc = !sortAsc;
+    localStorage.setItem("shotsync_sort", sortAsc ? "asc" : "desc");
+    sortHeader.className = sortAsc ? "asc" : "desc";
     initFeed();
   };
 }

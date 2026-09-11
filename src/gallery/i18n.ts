@@ -79,9 +79,7 @@ const zh: Record<string, string> = {
   "filter.doc": "文档",
 
   // Sort
-  "sort.newest": "最新",
-  "sort.oldest": "最早",
-  "sort.name": "名称",
+  "sort.time": "时间",
 };
 
 const en: Record<string, string> = {
@@ -163,9 +161,7 @@ const en: Record<string, string> = {
   "filter.doc": "Doc",
 
   // Sort
-  "sort.newest": "Newest",
-  "sort.oldest": "Oldest",
-  "sort.name": "Name",
+  "sort.time": "Time",
 };
 
 export const i18n = { zh, en };
