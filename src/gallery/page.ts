@@ -271,15 +271,20 @@ document.querySelector("#saveBtn").onclick = async () => {
   const ext = (blob.type.split("/")[1] || "bin").replace("jpeg", "jpg");
   const name = origName.includes(".") ? origName : currentId + "." + ext;
   const file = new File([blob], name, { type: blob.type });
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({ files: [file] });
-  } else {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file] });
+      return;
+    }
+  } catch (e) {
+    // canShare may lie on mobile; fall through to direct download
   }
+  // Direct download via blob URL
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 };
 
 document.querySelector("#docDownload")?.addEventListener("click", () => {
