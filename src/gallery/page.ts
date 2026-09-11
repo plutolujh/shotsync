@@ -87,6 +87,7 @@ export const galleryHTML = /* html */ `<!doctype html>
       <h2>设置</h2>
       <div class="kv"><span>相册地址（其他设备照着输）</span><code id="settingsUrl"></code></div>
       <div class="kv"><span>访问 token</span><code id="tokenValue"></code></div>
+      <div class="kv"><span>版本</span><code id="versionValue">v:AUTO</code></div>
       <div class="row">
         <button id="tokenReveal" style="background:#444">显示</button>
         <button id="tokenCopy">复制</button>
@@ -153,6 +154,8 @@ $("#settingsBtn").onclick = () => {
   tokenShown = false;
   $("#settingsUrl").textContent = location.origin;
   renderToken();
+  const ver = document.querySelector('meta[name="version"]');
+  $("#versionValue").textContent = ver ? ver.content : "unknown";
   $("#settings").classList.remove("hidden");
 };
 $("#settingsClose").onclick = closeSettings;
