@@ -31,6 +31,14 @@ export const EXT_BY_TYPE: Record<string, string> = {
   "video/x-msvideo": "avi",
   "video/mpeg": "mpeg",
   "video/3gpp": "3gp",
+  // iPhone HEVC encoded videos
+  "video/hevc": "mp4",
+  "video/x-hevc": "mp4",
+  "video/hev": "mp4",
+  // iPhone HEIC encoded images
+  "image/heic": "jpg",
+  "image/heif": "jpg",
+  "image/avif": "avif",
   // Fallback for unrecognized MIME types (use extension from filename)
   "application/octet-stream": "",
 };
