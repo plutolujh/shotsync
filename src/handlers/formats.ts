@@ -1,4 +1,3 @@
-import { json } from "../responses";
 import { FULL_EXTS } from "../ids";
 
 export const SUPPORTED_TYPES = {
@@ -8,98 +7,134 @@ export const SUPPORTED_TYPES = {
 };
 
 export function handleFormats(): Response {
-  return json({
-    name: "shotsync API",
-    version: "1.0",
-    endpoints: [
-      {
-        path: "/",
-        method: "GET",
-        description: "Web gallery UI",
-        auth: false,
-      },
-      {
-        path: "/api/list",
-        method: "GET",
-        description: "List all items in a room",
-        auth: true,
-        params: {
-          limit: "number (optional, default 50, max 100)",
-          cursor: "string (optional, for pagination)",
-        },
-        headers: {
-          "x-room-id": "string (optional, default 'gallery')",
-        },
-      },
-      {
-        path: "/api/upload",
-        method: "POST",
-        description: "Upload a file",
-        auth: true,
-        headers: {
-          "x-room-id": "string (optional, default 'gallery')",
-          "x-source": "string (optional, e.g. 'pwa', 'mac', 'curl')",
-          "x-filename": "string (optional, original filename)",
-        },
-        body: "multipart/form-data with 'full' and optional 'thumb' fields",
-      },
-      {
-        path: "/i/<id>",
-        method: "GET",
-        description: "Get file content",
-        auth: false,
-        params: {
-          room: "string (required)",
-          size: "string (optional, 'thumb' or 'full', default 'full')",
-        },
-      },
-      {
-        path: "/api/img/<id>",
-        method: "DELETE",
-        description: "Delete a file",
-        auth: true,
-        params: {
-          room: "string (required)",
-        },
-      },
-      {
-        path: "/api/room/<roomId>",
-        method: "DELETE",
-        description: "Delete all files in a room",
-        auth: true,
-      },
-      {
-        path: "/api/share/<id>",
-        method: "POST",
-        description: "Create a signed share link (7 days)",
-        auth: true,
-        params: {
-          room: "string (required, via query param)",
-        },
-        response: {
-          url: "string (signed URL)",
-          exp: "number (expiration timestamp)",
-        },
-      },
-      {
-        path: "/s/<id>",
-        method: "GET",
-        description: "Access shared file (no auth required)",
-        params: {
-          exp: "number (expiration timestamp)",
-          sig: "string (HMAC signature)",
-          room: "string (required)",
-        },
-      },
-      {
-        path: "/api/formats",
-        method: "GET",
-        description: "This API documentation",
-        auth: false,
-      },
-    ],
-    supportedFormats: SUPPORTED_TYPES,
-    maxFileSize: "25MB",
-    shareLinkExpiry: "7 days",
+  const md = `# shotsync API
+
+**Version:** 1.0
+
+## Overview
+
+shotsync is a file sharing service with HMAC-signed share links. Authentication is via \`Authorization: Bearer <token>\` header.
+
+## Endpoints
+
+### GET /
+Web gallery UI. No auth required.
+
+---
+
+### GET /api/list
+List all items in a room.
+
+**Auth:** Required
+
+| Header | Description |
+|--------|-------------|
+| \`x-room-id\` | Room ID (default: \`gallery\`) |
+
+| Param | Type | Description |
+|-------|------|-------------|
+| \`limit\` | number | Max items (default 50, max 100) |
+| \`cursor\` | string | Pagination cursor |
+
+---
+
+### POST /api/upload
+Upload a file.
+
+**Auth:** Required
+
+| Header | Description |
+|--------|-------------|
+| \`x-room-id\` | Room ID (default: \`gallery\`) |
+| \`x-source\` | Upload source (e.g. \`pwa\`, \`mac\`, \`curl\`) |
+| \`x-filename\` | Original filename |
+
+**Body:** \`multipart/form-data\` with fields:
+- \`full\` (required): The file
+- \`thumb\` (optional): Thumbnail image
+
+---
+
+### GET /i/<id>
+Get file content.
+
+**Auth:** Not required
+
+| Param | Type | Description |
+|-------|------|-------------|
+| \`room\` | string | Room ID (required) |
+| \`size\` | string | \`thumb\` or \`full\` (default: \`full\`) |
+
+---
+
+### DELETE /api/img/<id>
+Delete a file.
+
+**Auth:** Required
+
+| Param | Type | Description |
+|-------|------|-------------|
+| \`room\` | string | Room ID (required) |
+
+---
+
+### DELETE /api/room/<roomId>
+Delete all files in a room.
+
+**Auth:** Required
+
+---
+
+### POST /api/share/<id>
+Create a signed share link (valid for 7 days).
+
+**Auth:** Required
+
+| Param | Description |
+|--------|-------------|
+| \`room\` | Room ID (required, via query param) |
+
+**Response:**
+\`\`\`json
+{
+  "url": "https://...",
+  "exp": 1234567890
+}
+\`\`\`
+
+---
+
+### GET /s/<id>
+Access a shared file (no auth required).
+
+| Param | Type | Description |
+|-------|------|-------------|
+| \`exp\` | number | Expiration timestamp |
+| \`sig\` | string | HMAC signature |
+| \`room\` | string | Room ID (required) |
+
+---
+
+### GET /api/formats
+This API documentation.
+
+---
+
+## Supported Formats
+
+### Images
+${SUPPORTED_TYPES.images.join(", ")}
+
+### Documents
+${SUPPORTED_TYPES.documents.join(", ")}
+
+## Limits
+
+- **Max file size:** 25MB
+- **Share link expiry:** 7 days
+`;
+
+  return new Response(md, {
+    headers: { "content-type": "text/markdown; charset=utf-8" },
   });
 }
