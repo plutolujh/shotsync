@@ -80,6 +80,9 @@ const zh: Record<string, string> = {
 
   // Sort
   "sort.time": "时间",
+
+  // Drop zone
+  "dropzone.hint": "拖放文件上传",
 };
 
 const en: Record<string, string> = {
@@ -162,6 +165,9 @@ const en: Record<string, string> = {
 
   // Sort
   "sort.time": "Time",
+
+  // Drop zone
+  "dropzone.hint": "Drop files to upload",
 };
 
 export const i18n = { zh, en };
