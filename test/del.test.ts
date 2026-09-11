@@ -9,24 +9,26 @@ declare global {
   interface ProvidedEnv extends Env {}
 }
 
-function req(token = "test-token"): Request {
-  return new Request("https://x/api/img/ID", { method: "DELETE", headers: { authorization: `Bearer ${token}` } });
+const ROOM = "gallery";
+
+function req(room = ROOM, token = "test-token"): Request {
+  return new Request(`https://x/api/img/ID?room=${room}`, { method: "DELETE", headers: { authorization: `Bearer ${token}` } });
 }
 
 describe("handleDelete", () => {
   it("401 without token", async () => {
-    const res = await handleDelete(new Request("https://x/api/img/ID", { method: "DELETE" }), env as Env, "ID");
+    const res = await handleDelete(new Request("https://x/api/img/ID?room=gallery", { method: "DELETE" }), env as Env, "ID");
     expect(res.status).toBe(401);
   });
 
   it("deletes both full and thumb objects", async () => {
-    await (env as Env).BUCKET.put(fullKey("ID", "png"), new Uint8Array([1]));
-    await (env as Env).BUCKET.put(thumbKey("ID"), new Uint8Array([2]));
+    await (env as Env).BUCKET.put(fullKey(ROOM, "ID", "png"), new Uint8Array([1]));
+    await (env as Env).BUCKET.put(thumbKey(ROOM, "ID"), new Uint8Array([2]));
     const res = await handleDelete(req(), env as Env, "ID");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ deleted: true });
-    expect(await (env as Env).BUCKET.get(fullKey("ID", "png"))).toBeNull();
-    expect(await (env as Env).BUCKET.get(thumbKey("ID"))).toBeNull();
+    expect(await (env as Env).BUCKET.get(fullKey(ROOM, "ID", "png"))).toBeNull();
+    expect(await (env as Env).BUCKET.get(thumbKey(ROOM, "ID"))).toBeNull();
   });
 
   it("idempotent when nothing exists", async () => {

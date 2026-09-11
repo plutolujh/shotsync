@@ -21,9 +21,9 @@ export async function handleDeleteRoom(request: Request, env: Env, roomId: strin
       cursor,
     });
 
-    for (const obj of listing.objects) {
-      await env.BUCKET.delete(obj.key);
-      deleted++;
+    if (listing.objects.length > 0) {
+      await env.BUCKET.delete(listing.objects.map((o) => o.key));
+      deleted += listing.objects.length;
     }
 
     cursor = listing.cursor;
@@ -38,9 +38,9 @@ export async function handleDeleteRoom(request: Request, env: Env, roomId: strin
       cursor,
     });
 
-    for (const obj of listing.objects) {
-      await env.BUCKET.delete(obj.key);
-      deleted++;
+    if (listing.objects.length > 0) {
+      await env.BUCKET.delete(listing.objects.map((o) => o.key));
+      deleted += listing.objects.length;
     }
 
     cursor = listing.cursor;

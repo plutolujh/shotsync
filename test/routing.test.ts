@@ -1,7 +1,8 @@
 import { SELF } from "cloudflare:test";
 import { describe, it, expect } from "vitest";
 
-const T = { authorization: "Bearer test-token" };
+const T = { authorization: "Bearer test-token", "x-room-id": "gallery" };
+const ROOM = "gallery";
 
 describe("routing end-to-end", () => {
   it("GET / returns html", async () => {
@@ -20,15 +21,15 @@ describe("routing end-to-end", () => {
     const body = await list.json<{ items: any[] }>();
     expect(body.items.some((i) => i.id === id)).toBe(true);
 
-    const img = await SELF.fetch(`https://x/i/${id}`, { headers: T });
+    const img = await SELF.fetch(`https://x/i/${id}?room=${ROOM}`, { headers: T });
     expect(img.status).toBe(200);
     await img.arrayBuffer();
 
-    const del = await SELF.fetch(`https://x/api/img/${id}`, { method: "DELETE", headers: T });
+    const del = await SELF.fetch(`https://x/api/img/${id}?room=${ROOM}`, { method: "DELETE", headers: T });
     expect(del.status).toBe(200);
     await del.json();
 
-    const img2 = await SELF.fetch(`https://x/i/${id}`, { headers: T });
+    const img2 = await SELF.fetch(`https://x/i/${id}?room=${ROOM}`, { headers: T });
     expect(img2.status).toBe(404);
     await img2.json();
   });

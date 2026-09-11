@@ -9,17 +9,21 @@ declare global {
   interface ProvidedEnv extends Env {}
 }
 
-async function seed(epochMs: number, hasThumb: string) {
+const ROOM = "gallery";
+
+async function seed(epochMs: number, hasThumb: string, roomId = ROOM) {
   const id = makeId(epochMs, "aaaaaa".slice(0, 5) + (epochMs % 10));
-  await (env as Env).BUCKET.put(fullKey(id, "png"), new Uint8Array([1]), {
+  await (env as Env).BUCKET.put(fullKey(roomId, id, "png"), new Uint8Array([1]), {
     httpMetadata: { contentType: "image/png" },
     customMetadata: { hasThumb, source: "mac", uploadedAt: "x", origName: "" },
   });
   return id;
 }
 
-function listReq(qs = "", token = "test-token"): Request {
-  return new Request(`https://x/api/list${qs}`, { headers: { authorization: `Bearer ${token}` } });
+function listReq(qs = "", token = "test-token", room = ROOM): Request {
+  const headers: Record<string, string> = { authorization: `Bearer ${token}` };
+  if (room) headers["x-room-id"] = room;
+  return new Request(`https://x/api/list${qs}`, { headers });
 }
 
 describe("handleList", () => {
@@ -55,6 +59,15 @@ describe("handleList", () => {
     expect(body.items.length).toBe(2);
     expect(body.cursor).toBeTruthy();
   });
+
+  it("filters by room", async () => {
+    await seed(1000, "false", "room-a");
+    await seed(2000, "false", "room-b");
+    const res = await handleList(listReq("", "test-token", "room-a"), env as any);
+    const body = await res.json<{ items: any[] }>();
+    expect(body.items.length).toBe(1);
+    expect(body.items[0].roomId).toBe("room-a");
+  });
 });
 
 // The gallery used to render every text card as "…" and then fetch each one
@@ -62,9 +75,9 @@ describe("handleList", () => {
 // 1.8s (list resolved) until 3.6s (last fetch landed). The snippet now travels
 // with the list, so these tests pin the three properties that make that safe.
 describe("handleList: inline text snippets", () => {
-  async function seedText(epochMs: number, body: string) {
+  async function seedText(epochMs: number, body: string, roomId = ROOM) {
     const id = makeId(epochMs, "t" + (epochMs % 10000));
-    await (env as Env).BUCKET.put(fullKey(id, "txt"), new TextEncoder().encode(body), {
+    await (env as Env).BUCKET.put(fullKey(roomId, id, "txt"), new TextEncoder().encode(body), {
       httpMetadata: { contentType: "text/plain" },
       customMetadata: { hasThumb: "false", source: "mac", uploadedAt: "x", origName: "" },
     });

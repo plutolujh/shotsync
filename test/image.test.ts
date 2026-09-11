@@ -9,17 +9,22 @@ declare global {
   interface ProvidedEnv extends Env {}
 }
 
+const ROOM = "gallery";
+
 async function put(key: string, type: string, bytes: number[]) {
   await (env as any).BUCKET.put(key, new Uint8Array(bytes), { httpMetadata: { contentType: type } });
 }
-function req(size?: string, token = "test-token"): Request {
-  const qs = size ? `?size=${size}` : "";
-  return new Request(`https://x/i/ID${qs}`, { headers: { authorization: `Bearer ${token}` } });
+function req(size?: string, room = ROOM, token = "test-token"): Request {
+  const qs = new URLSearchParams();
+  if (size) qs.set("size", size);
+  if (room) qs.set("room", room);
+  const q = qs.toString();
+  return new Request(`https://x/i/ID${q ? "?" + q : ""}`, { headers: { authorization: `Bearer ${token}` } });
 }
 
 describe("handleImage", () => {
   it("401 without token", async () => {
-    const res = await handleImage(new Request("https://x/i/ID"), env as any, "ID");
+    const res = await handleImage(new Request("https://x/i/ID?room=gallery"), env as any, "ID");
     expect(res.status).toBe(401);
   });
 
@@ -29,7 +34,7 @@ describe("handleImage", () => {
   });
 
   it("serves full with content-type + cache header", async () => {
-    await put(fullKey("ID", "png"), "image/png", [1, 2, 3]);
+    await put(fullKey(ROOM, "ID", "png"), "image/png", [1, 2, 3]);
     const res = await handleImage(req(), env as any, "ID");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("image/png");
@@ -38,14 +43,14 @@ describe("handleImage", () => {
   });
 
   it("serves thumb when size=thumb and thumb exists", async () => {
-    await put(fullKey("ID", "png"), "image/png", [1, 2, 3]);
-    await put(thumbKey("ID"), "image/jpeg", [9, 9]);
+    await put(fullKey(ROOM, "ID", "png"), "image/png", [1, 2, 3]);
+    await put(thumbKey(ROOM, "ID"), "image/jpeg", [9, 9]);
     const res = await handleImage(req("thumb"), env as any, "ID");
     expect(new Uint8Array(await res.arrayBuffer())).toEqual(new Uint8Array([9, 9]));
   });
 
   it("falls back to full when size=thumb but no thumb", async () => {
-    await put(fullKey("ID", "jpg"), "image/jpeg", [7]);
+    await put(fullKey(ROOM, "ID", "jpg"), "image/jpeg", [7]);
     const res = await handleImage(req("thumb"), env as any, "ID");
     expect(res.status).toBe(200);
     expect(new Uint8Array(await res.arrayBuffer())).toEqual(new Uint8Array([7]));

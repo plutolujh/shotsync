@@ -8,13 +8,16 @@ declare global {
   interface ProvidedEnv extends Env {}
 }
 
-function uploadReq(opts: { token?: string; full?: Blob; thumb?: Blob; source?: string }): Request {
+const ROOM = "gallery";
+
+function uploadReq(opts: { token?: string; full?: Blob; thumb?: Blob; source?: string; roomId?: string }): Request {
   const fd = new FormData();
   if (opts.full) fd.set("full", opts.full, "shot.png");
   if (opts.thumb) fd.set("thumb", opts.thumb, "shot.jpg");
   const headers: Record<string, string> = {};
   if (opts.token) headers["authorization"] = `Bearer ${opts.token}`;
   if (opts.source) headers["x-source"] = opts.source;
+  if (opts.roomId) headers["x-room-id"] = opts.roomId;
   return new Request("https://x/api/upload", { method: "POST", headers, body: fd });
 }
 
@@ -41,9 +44,10 @@ describe("handleUpload", () => {
   it("stores full, returns id, hasThumb=false when no thumb", async () => {
     const res = await handleUpload(uploadReq({ token: "test-token", full: png(), source: "pwa" }), env as Env);
     expect(res.status).toBe(200);
-    const { id } = await res.json<{ id: string }>();
+    const { id, roomId } = await res.json<{ id: string; roomId: string }>();
     expect(id).toMatch(/^\d{16}-[0-9a-z]{6}$/);
-    const obj = await (env as Env).BUCKET.get(`full/${id}.png`);
+    expect(roomId).toBe(ROOM);
+    const obj = await (env as Env).BUCKET.get(`full/${ROOM}/${id}.png`);
     expect(obj).not.toBeNull();
     expect(obj!.customMetadata?.hasThumb).toBe("false");
     expect(obj!.customMetadata?.source).toBe("pwa");
@@ -54,10 +58,10 @@ describe("handleUpload", () => {
   it("stores thumb too when provided", async () => {
     const res = await handleUpload(uploadReq({ token: "test-token", full: png(), thumb: jpg() }), env as Env);
     const { id } = await res.json<{ id: string }>();
-    const thumb = await (env as Env).BUCKET.get(`thumb/${id}.jpg`);
+    const thumb = await (env as Env).BUCKET.get(`thumb/${ROOM}/${id}.jpg`);
     expect(thumb).not.toBeNull();
     await thumb!.body?.cancel();
-    const full = await (env as Env).BUCKET.get(`full/${id}.png`);
+    const full = await (env as Env).BUCKET.get(`full/${ROOM}/${id}.png`);
     expect(full!.customMetadata?.hasThumb).toBe("true");
     // Consume the stream to avoid cleanup issues
     await full!.body?.cancel();

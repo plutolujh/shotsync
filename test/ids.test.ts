@@ -22,9 +22,9 @@ describe("ids", () => {
   });
 
   it("key helpers", () => {
-    expect(fullKey("ID", "png")).toBe("full/ID.png");
-    expect(thumbKey("ID")).toBe("thumb/ID.jpg");
-    expect(idFromFullKey("full/ID.png")).toBe("ID");
+    expect(fullKey("gallery", "ID", "png")).toBe("full/gallery/ID.png");
+    expect(thumbKey("gallery", "ID")).toBe("thumb/gallery/ID.jpg");
+    expect(idFromFullKey("full/gallery/ID.png")).toBe("ID");
     expect(idFromFullKey("full/0007-xy.webp")).toBe("0007-xy");
   });
 

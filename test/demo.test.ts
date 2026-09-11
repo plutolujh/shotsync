@@ -13,23 +13,29 @@ declare global {
   interface ProvidedEnv extends Env {}
 }
 
+const ROOM = "gallery";
+
 function demoEnv(): Env {
   return { ...(env as Env), DEMO_MODE: "1" };
 }
 
 async function seedOne(): Promise<string> {
   const id = makeId(1000, "aaaa1");
-  await (env as Env).BUCKET.put(fullKey(id, "png"), new Uint8Array([1]), {
+  await (env as Env).BUCKET.put(fullKey(ROOM, id, "png"), new Uint8Array([1]), {
     httpMetadata: { contentType: "image/png" },
     customMetadata: { hasThumb: "false", source: "mac", uploadedAt: "x", origName: "" },
   });
   return id;
 }
 
+function listReq(room = ROOM): Request {
+  return new Request(`https://x/api/list`, { headers: { "x-room-id": room } });
+}
+
 describe("demo mode", () => {
   it("list is public when DEMO_MODE=1", async () => {
     await seedOne();
-    const res = await handleList(new Request("https://x/api/list"), demoEnv());
+    const res = await handleList(listReq(), demoEnv());
     expect(res.status).toBe(200);
     const body = await res.json<{ items: unknown[] }>();
     expect(body.items.length).toBe(1);
@@ -37,7 +43,7 @@ describe("demo mode", () => {
 
   it("image view is public when DEMO_MODE=1", async () => {
     const id = await seedOne();
-    const res = await handleImage(new Request(`https://x/i/${id}`), demoEnv(), id);
+    const res = await handleImage(new Request(`https://x/i/${id}?room=${ROOM}`), demoEnv(), id);
     expect(res.status).toBe(200);
     await res.arrayBuffer(); // drain the R2 stream so isolated storage can unwind
   });
@@ -53,7 +59,7 @@ describe("demo mode", () => {
   it("delete still requires token in demo mode", async () => {
     const id = await seedOne();
     const res = await handleDelete(
-      new Request(`https://x/api/img/${id}`, { method: "DELETE" }),
+      new Request(`https://x/api/img/${id}?room=${ROOM}`, { method: "DELETE" }),
       demoEnv(),
       id,
     );

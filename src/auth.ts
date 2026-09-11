@@ -1,11 +1,10 @@
 import { Env } from "./responses";
 
 function constantTimeEqual(a: string, b: string): boolean {
-  // Lengths differ -> result is false, but still iterate to reduce timing variance.
   const len = Math.max(a.length, b.length);
-  let diff = a.length ^ b.length;
+  let diff = 0;
   for (let i = 0; i < len; i++) {
-    diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+    diff ^= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
   }
   return diff === 0;
 }

@@ -1,7 +1,8 @@
 import { SELF } from "cloudflare:test";
 import { describe, it, expect } from "vitest";
 
-const T = { authorization: "Bearer test-token" };
+const T = { authorization: "Bearer test-token", "x-room-id": "gallery" };
+const ROOM = "gallery";
 
 describe("text items in the pool", () => {
   it("upload text -> list as text/plain -> serve text -> delete", async () => {
@@ -22,16 +23,16 @@ describe("text items in the pool", () => {
     expect(item.contentType).toBe("text/plain");
     expect(item.hasThumb).toBe(false);
 
-    const got = await SELF.fetch(`https://x/i/${id}`, { headers: T });
+    const got = await SELF.fetch(`https://x/i/${id}?room=${ROOM}`, { headers: T });
     expect(got.status).toBe(200);
     expect(got.headers.get("content-type")).toContain("text/plain");
     expect(await got.text()).toBe("hello cross-device");
 
-    const del = await SELF.fetch(`https://x/api/img/${id}`, { method: "DELETE", headers: T });
+    const del = await SELF.fetch(`https://x/api/img/${id}?room=${ROOM}`, { method: "DELETE", headers: T });
     expect(del.status).toBe(200);
     await del.json();
 
-    const after = await SELF.fetch(`https://x/i/${id}`, { headers: T });
+    const after = await SELF.fetch(`https://x/i/${id}?room=${ROOM}`, { headers: T });
     expect(after.status).toBe(404);
     await after.json();
   });
@@ -42,10 +43,10 @@ describe("text items in the pool", () => {
     const up = await SELF.fetch("https://x/api/upload", { method: "POST", headers: T, body: fd });
     expect(up.status).toBe(200);
     const { id } = await up.json<{ id: string }>();
-    const got = await SELF.fetch(`https://x/i/${id}`, { headers: T });
+    const got = await SELF.fetch(`https://x/i/${id}?room=${ROOM}`, { headers: T });
     expect(got.status).toBe(200);
     expect(await got.text()).toBe("with charset");
-    await SELF.fetch(`https://x/api/img/${id}`, { method: "DELETE", headers: T }).then((r) => r.json());
+    await SELF.fetch(`https://x/api/img/${id}?room=${ROOM}`, { method: "DELETE", headers: T }).then((r) => r.json());
   });
 
   it("still rejects a genuinely unsupported type with 415", async () => {
