@@ -466,13 +466,26 @@ function makeCell(item) {
       thumb.style.cssText = "width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0";
       cell.appendChild(thumb);
       videoThumbs.add(cell);
-    } else {
-      const el = document.createElement(isText ? "div" : "img");
-      el.dataset.id = item.id; el.dataset.roomId = item.roomId || "";
-      el.dataset.kind = isText ? "text" : "image";
-      if (isText) { el.className = "txtcell"; el.textContent = item.snippet || "…"; }
-      if (!(isText && item.snippet)) contentObserver.observe(el);
+    } else if (isText) {
+      const el = document.createElement("div");
+      el.dataset.id = item.id; el.dataset.roomId = item.roomId || ""; el.dataset.kind = "text";
+      el.className = "txtcell"; el.textContent = item.snippet || "…";
+      if (!item.snippet) contentObserver.observe(el);
       cell = el;
+    } else {
+      // Doc/PDF/zip etc - show icon
+      cell = document.createElement("div");
+      cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = "doc";
+      cell.style.cssText = "width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px";
+      const icon = document.createElement("span");
+      icon.textContent = getExtIcon(ct);
+      icon.style.cssText = "font-size:28px";
+      cell.appendChild(icon);
+      const name = document.createElement("span");
+      const ext = (item.origName || item.id).split(".").pop()?.toUpperCase() || "";
+      name.textContent = ext;
+      name.style.cssText = "font-size:10px;color:#aaa";
+      cell.appendChild(name);
     }
   }
   cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = isVideo ? "video" : (isText ? "text" : "image");
