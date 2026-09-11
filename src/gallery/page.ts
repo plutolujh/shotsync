@@ -228,7 +228,7 @@ async function openFull(id, roomId) {
       const url = URL.createObjectURL(currentBlob);
       pdf.src = url; pdf.classList.remove("hidden");
       $("#saveBtn").textContent = T("viewer.save");
-    } else if (ct.includes("word") || ct.includes("document") || ct.includes("sheet") || ct.includes("excel") || ct.includes("zip") || ct.includes("office")) {
+    } else if (ct.includes("word") || ct.includes("document") || ct.includes("sheet") || ct.includes("excel") || ct.includes("zip") || ct.includes("office") || ct === "application/octet-stream") {
       currentKind = "doc";
       const icon = getExtIcon(ct);
       const nameEl = $("#docName"); if (nameEl) nameEl.textContent = origName;
