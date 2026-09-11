@@ -9,6 +9,7 @@ export const galleryHTML = /* html */ `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>shotsync</title>
 <link rel="manifest" href="/manifest.webmanifest">
+<meta name="version" content="v:AUTO">
 <meta name="theme-color" content="#111111">
 <style>
   :root { color-scheme: dark; }

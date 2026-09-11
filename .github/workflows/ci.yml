@@ -29,6 +29,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Get commit hash
+        run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Update version in HTML
+        run: sed -i 's/v:AUTO/v:${{ steps.commit.outputs.hash }}/' src/gallery/page.ts
       - run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
