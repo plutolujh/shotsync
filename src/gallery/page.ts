@@ -88,6 +88,7 @@ export const galleryHTML = /* html */ `<!doctype html>
       <div class="kv"><span>相册地址（其他设备照着输）</span><code id="settingsUrl"></code></div>
       <div class="kv"><span>访问 token</span><code id="tokenValue"></code></div>
       <div class="kv"><span>版本</span><code id="versionValue">v:AUTO</code></div>
+      <div class="kv"><span>API 文档</span><a id="apiFormatsLink" href="/api/formats" target="_blank" style="color:#2b6cff">查看支持的格式和 API</a></div>
       <div class="row">
         <button id="tokenReveal" style="background:#444">显示</button>
         <button id="tokenCopy">复制</button>

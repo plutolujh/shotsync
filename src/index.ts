@@ -5,6 +5,7 @@ import { handleImage } from "./handlers/image";
 import { handleDelete } from "./handlers/del";
 import { handleDeleteRoom } from "./handlers/delroom";
 import { handleShareCreate, handleSharedItem } from "./handlers/share";
+import { handleFormats } from "./handlers/formats";
 import { galleryDemoHTML, galleryHTML } from "./gallery/page";
 import { manifestJSON } from "./gallery/manifest";
 import { swJS } from "./gallery/sw";
@@ -62,6 +63,9 @@ export default {
     if (pathname.startsWith("/s/")) {
       const id = decodeURIComponent(pathname.slice("/s/".length));
       return m === "GET" ? handleSharedItem(request, env, id) : err(405, "method not allowed");
+    }
+    if (pathname === "/api/formats" && m === "GET") {
+      return handleFormats();
     }
     return err(404, "not found");
   },
