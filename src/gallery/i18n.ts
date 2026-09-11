@@ -70,6 +70,18 @@ const zh: Record<string, string> = {
   "view.small": "小图",
   "view.large": "大图",
   "view.list": "列表",
+
+  // Filter
+  "filter.all": "全部",
+  "filter.image": "图片",
+  "filter.video": "视频",
+  "filter.text": "文字",
+  "filter.doc": "文档",
+
+  // Sort
+  "sort.newest": "最新",
+  "sort.oldest": "最早",
+  "sort.name": "名称",
 };
 
 const en: Record<string, string> = {
@@ -142,6 +154,18 @@ const en: Record<string, string> = {
   "view.small": "Small",
   "view.large": "Large",
   "view.list": "List",
+
+  // Filter
+  "filter.all": "All",
+  "filter.image": "Image",
+  "filter.video": "Video",
+  "filter.text": "Text",
+  "filter.doc": "Doc",
+
+  // Sort
+  "sort.newest": "Newest",
+  "sort.oldest": "Oldest",
+  "sort.name": "Name",
 };
 
 export const i18n = { zh, en };

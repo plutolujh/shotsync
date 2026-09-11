@@ -35,9 +35,15 @@ describe("handleUpload", () => {
     expect(res.status).toBe(400);
   });
 
-  it("415 for non-web-safe full type", async () => {
-    const heic = new Blob([new Uint8Array([9])], { type: "image/heic" });
-    const res = await handleUpload(uploadReq({ token: "test-token", full: heic }), env as Env);
+  it("415 for unsupported type with unrecognized extension in filename", async () => {
+    // A mime type not in EXT_BY_TYPE AND filename with no recognized extension should fail
+    const unknown = new Blob([new Uint8Array([9])], { type: "application/octet-stream" });
+    // Create request manually to use a filename with unrecognized extension
+    const fd = new FormData();
+    fd.set("full", unknown, "random.xyz"); // xyz is not a recognized extension
+    const headers: Record<string, string> = { authorization: "Bearer test-token" };
+    const req = new Request("https://x/api/upload", { method: "POST", headers, body: fd });
+    const res = await handleUpload(req, env as Env);
     expect(res.status).toBe(415);
   });
 

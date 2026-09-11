@@ -22,6 +22,17 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
   const url = new URL(request.url);
   const limit = Math.min(Number(url.searchParams.get("limit")) || 50, 100);
   const cursor = url.searchParams.get("cursor") || undefined;
+  const sort = url.searchParams.get("sort") || "newest";
+  const type = url.searchParams.get("type") || "all";
+
+  // Validate sort param
+  if (!["newest", "oldest", "name"].includes(sort)) {
+    return err(400, "sort must be newest, oldest, or name");
+  }
+  // Validate type param
+  if (!["all", "image", "text", "video", "doc"].includes(type)) {
+    return err(400, "type must be all, image, text, video, or doc");
+  }
 
   // Room isolation: list only the specified room, or default to "gallery".
   const roomId = request.headers.get("x-room-id") || "gallery";
@@ -49,6 +60,26 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
       origName: o.customMetadata?.origName || "",
     };
   });
+
+  // Sort: newest is R2's natural order (inverted timestamp in key = newest first).
+  // For oldest or name, we need to sort in-memory.
+  if (sort === "oldest") {
+    items.sort((a, b) => a.time - b.time);
+  } else if (sort === "name") {
+    items.sort((a, b) => (a.origName || a.id).localeCompare(b.origName || b.id));
+  }
+
+  // Filter by content type.
+  if (type === "image") {
+    items.splice(0, items.length, ...items.filter((i) => i.contentType.startsWith("image/")));
+  } else if (type === "text") {
+    items.splice(0, items.length, ...items.filter((i) => i.contentType.startsWith("text/")));
+  } else if (type === "video") {
+    items.splice(0, items.length, ...items.filter((i) => i.contentType.startsWith("video/")));
+  } else if (type === "doc") {
+    const docTypes = ["application/pdf", "application/zip", "application/msword", "application/vnd.openxmlformats-officedocument.", "application/vnd.ms-excel"];
+    items.splice(0, items.length, ...items.filter((i) => docTypes.some((t) => i.contentType.includes(t))));
+  }
 
   // Text previews ride along with the list rather than costing one browser
   // round-trip each. Concurrency is limited to avoid overwhelming R2.

@@ -23,6 +23,14 @@ export const EXT_BY_TYPE: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
   "application/vnd.ms-excel": "xls",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+  // Videos
+  "video/mp4": "mp4",
+  "video/quicktime": "mov",
+  "video/x-m4v": "m4v",
+  "video/webm": "webm",
+  "video/x-msvideo": "avi",
+  "video/mpeg": "mpeg",
+  "video/3gpp": "3gp",
   // Fallback for unrecognized MIME types (use extension from filename)
   "application/octet-stream": "",
 };
@@ -30,7 +38,7 @@ export const EXT_BY_TYPE: Record<string, string> = {
 // Candidate extensions a `full/<id>.<ext>` object may carry. Used when probing
 // for an object whose ext is unknown (image serve / delete). Shared so the
 // serve and delete paths can never drift out of sync.
-export const FULL_EXTS = ["png", "jpg", "webp", "gif", "svg", "bmp", "ico", "txt", "html", "css", "js", "json", "xml", "pdf", "zip", "doc", "docx", "xls", "xlsx"];
+export const FULL_EXTS = ["png", "jpg", "webp", "gif", "svg", "bmp", "ico", "txt", "html", "css", "js", "json", "xml", "pdf", "zip", "doc", "docx", "xls", "xlsx", "mp4", "mov", "m4v", "webm", "avi", "mpeg", "3gp"];
 
 // Allowed extensions map (reverse lookup from EXT_BY_TYPE)
 export const ALLOWED_EXTS = new Set(FULL_EXTS);

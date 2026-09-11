@@ -6,7 +6,7 @@ const LANG_KEY = "shotsync_lang";
 
 function buildHTML(demo: boolean, demoEn: boolean): string {
   const lang: Lang = demo && demoEn ? "en" : "zh";
-  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}#viewerPdf{flex:1;min-height:0}#viewerDoc{flex:1;min-height:0}`;
+  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:8px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a;flex-wrap:wrap}header h1{font-size:16px;margin:0;flex:1;min-width:60px}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}#viewerPdf{flex:1;min-height:0}#viewerDoc{flex:1;min-height:0}#viewerVideo{flex:1;min-height:0;max-height:100%;object-fit:contain;width:100%}#filterBar{display:flex;gap:4px;align-items:center}#filterBar select{background:#333;color:#eee;border:1px solid #444;border-radius:6px;padding:6px 8px;font-size:13px;cursor:pointer}#filterBar select:focus{outline:none;border-color:#2b6cff}#grid .videocell{position:relative;width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;overflow:hidden}#grid .videocell img{width:100%;height:100%;object-fit:cover}#grid .videocell::after{content:"▶";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)}#grid .videocell:hover::after{font-size:28px}#grid.small-view .videocell::after{font-size:16px}#grid.list-view .videocell::after{display:none}`;
   return /* html */ `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -29,7 +29,21 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
 
   <header class="hidden" id="bar">
     <h1>shotsync</h1>
-    <input id="fileInput" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.html,.css,.js,.json,.xml,.zip" multiple class="hidden">
+    <div id="filterBar">
+      <select id="typeFilter" title="Filter">
+        <option value="all">${i18n[lang]["filter.all"]}</option>
+        <option value="image">${i18n[lang]["filter.image"]}</option>
+        <option value="video">${i18n[lang]["filter.video"]}</option>
+        <option value="text">${i18n[lang]["filter.text"]}</option>
+        <option value="doc">${i18n[lang]["filter.doc"]}</option>
+      </select>
+      <select id="sortFilter" title="Sort">
+        <option value="newest">${i18n[lang]["sort.newest"]}</option>
+        <option value="oldest">${i18n[lang]["sort.oldest"]}</option>
+        <option value="name">${i18n[lang]["sort.name"]}</option>
+      </select>
+    </div>
+    <input id="fileInput" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.html,.css,.js,.json,.xml,.zip" multiple class="hidden">
     <button id="textBtn" style="background:#444" data-i18n="header.text">${i18n[lang]["header.text"]}</button>
     <button id="uploadBtn" data-i18n="header.upload">${i18n[lang]["header.upload"]}</button>
     <button id="selectBtn" style="background:#444" data-i18n="header.select">${i18n[lang]["header.select"]}</button>
@@ -79,6 +93,7 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
     </div>
     <img id="viewerImg" class="hidden" style="flex:1;min-height:0;object-fit:contain;width:100%">
     <pre id="viewerText" class="hidden"></pre>
+    <video id="viewerVideo" class="hidden" controls playsinline style="flex:1;min-height:0;max-height:100%;object-fit:contain;width:100%"></video>
     <embed id="viewerPdf" class="hidden" type="application/pdf" style="flex:1;min-height:0;width:100%;border:none">
     <div id="viewerDoc" class="hidden" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#888;padding:20px;text-align:center">
       <span style="font-size:48px" id="docIcon"></span>
@@ -201,15 +216,17 @@ function setViewMode(mode) {
 }
 
 // Full viewer
-let currentId = null, currentRoomId = null, currentKind = "image", currentBlob = null;
+let currentId = null, currentRoomId = null, currentKind = "image", currentBlob = null, currentVideoUrl = null;
 
 async function openFull(id, roomId) {
   currentId = id; currentRoomId = roomId;
-  const v = $("#viewer"), img = $("#viewerImg"), txt = $("#viewerText"), pdf = $("#viewerPdf"), doc = $("#viewerDoc");
+  const v = $("#viewer"), img = $("#viewerImg"), txt = $("#viewerText"), vid = $("#viewerVideo"), pdf = $("#viewerPdf"), doc = $("#viewerDoc");
   img.removeAttribute("src"); img.classList.add("hidden");
   txt.textContent = ""; txt.classList.add("hidden");
+  vid.removeAttribute("src"); vid.classList.add("hidden");
   pdf.removeAttribute("src"); pdf.classList.add("hidden");
   doc.classList.add("hidden");
+  if (currentVideoUrl) { URL.revokeObjectURL(currentVideoUrl); currentVideoUrl = null; }
   v.classList.remove("hidden");
   const item = itemsById.get(id);
   const origName = item?.origName || id;
@@ -223,6 +240,11 @@ async function openFull(id, roomId) {
       currentKind = "text";
       txt.textContent = await currentBlob.text(); txt.classList.remove("hidden");
       $("#saveBtn").textContent = T("viewer.copy");
+    } else if (ct.indexOf("video/") === 0) {
+      currentKind = "video";
+      currentVideoUrl = URL.createObjectURL(currentBlob);
+      vid.src = currentVideoUrl; vid.classList.remove("hidden");
+      $("#saveBtn").textContent = T("viewer.save");
     } else if (ct.includes("pdf")) {
       currentKind = "pdf";
       const url = URL.createObjectURL(currentBlob);
@@ -308,6 +330,9 @@ let cursor = null, loading = false, knownIds = new Set(), pollTimer = null;
 let viewMode = localStorage.getItem("shotsync_view") || "small";
 let itemsById = new Map();
 let contentObserver;
+let videoThumbs = new Set();
+let currentFilter = localStorage.getItem("shotsync_filter") || "all";
+let currentSort = localStorage.getItem("shotsync_sort") || "newest";
 
 // Multi-select
 let selectMode = false; const selected = new Set();
@@ -346,8 +371,12 @@ async function deleteSelected() {
 }
 
 async function fetchPage(c) {
-  const qs = c ? "?cursor=" + encodeURIComponent(c) + "&limit=40" : "?limit=40";
-  const res = await fetch("/api/list" + qs, { headers: authHeaders() });
+  const params = new URLSearchParams();
+  if (c) params.set("cursor", c);
+  params.set("limit", "40");
+  params.set("type", currentFilter);
+  params.set("sort", currentSort);
+  const res = await fetch("/api/list?" + params.toString(), { headers: authHeaders() });
   if (!res.ok) throw new Error("list failed");
   return res.json();
 }
@@ -364,6 +393,23 @@ async function loadThumb(img) {
   } catch {}
 }
 
+async function loadVideoThumb(cell) {
+  const id = cell.dataset.id, roomId = cell.dataset.roomId;
+  // Try to get thumbnail from video at 1 second mark
+  const url = "/i/" + id + "?size=thumb" + (roomId ? "&room=" + encodeURIComponent(roomId) : "");
+  try {
+    const res = await fetch(url, { headers: authHeaders() });
+    if (!res.ok) return;
+    const blobUrl = URL.createObjectURL(await res.blob());
+    const img = cell.querySelector("img");
+    if (img) {
+      img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
+      img.src = blobUrl;
+    }
+  } catch {}
+  videoThumbs.delete(cell);
+}
+
 async function loadTextSnippet(card) {
   const roomId = card.dataset.roomId;
   const url = "/i/" + card.dataset.id + (roomId ? "?room=" + encodeURIComponent(roomId) : "");
@@ -375,17 +421,19 @@ async function loadTextSnippet(card) {
 }
 
 function makeCell(item) {
-  const isText = (item.contentType || "").indexOf("text/") === 0;
-  const isImage = (item.contentType || "").startsWith("image/");
+  const ct = item.contentType || "";
+  const isText = ct.indexOf("text/") === 0;
+  const isImage = ct.startsWith("image/");
+  const isVideo = ct.startsWith("video/");
   const isList = viewMode === "list";
 
   let cell;
   if (isList) {
     cell = document.createElement("div");
     cell.style.cssText = "display:flex;align-items:center;gap:10px;flex:1;overflow:hidden;cursor:pointer";
-    if (!isImage) {
+    if (!isImage && !isVideo) {
       const icon = document.createElement("span");
-      icon.textContent = getExtIcon(item.contentType);
+      icon.textContent = getExtIcon(ct);
       icon.style.cssText = "font-size:16px;flex-shrink:0";
       cell.appendChild(icon);
     }
@@ -399,24 +447,37 @@ function makeCell(item) {
     meta.textContent = formatTime(item.time);
     meta.style.cssText = "flex-shrink:0";
     cell.appendChild(meta);
-    // For images, show thumb inline
-    if (isImage) {
-      const thumb = document.createElement("img");
+    // For images/videos, show thumb inline
+    if (isImage || isVideo) {
+      const thumb = document.createElement(isImage ? "img" : "div");
       thumb.style.cssText = "width:36px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0";
-      thumb.dataset.id = item.id; thumb.dataset.roomId = item.roomId || ""; thumb.dataset.kind = "image";
+      thumb.dataset.id = item.id; thumb.dataset.roomId = item.roomId || "";
+      thumb.dataset.kind = isVideo ? "video" : "image";
+      if (isVideo) { thumb.className = "videocell"; thumb.style.cssText = "width:36px;height:36px;border-radius:4px;flex-shrink:0;cursor:pointer;position:relative;background:#222;display:flex;align-items:center;justify-content:center"; }
       thumb.onclick = () => { if (selectMode) toggleSelect(thumb); else openFull(item.id, item.roomId); };
       cell.insertBefore(thumb, cell.firstChild);
-      contentObserver.observe(thumb);
+      if (isImage) contentObserver.observe(thumb);
+      else if (isVideo) videoThumbs.add(thumb);
     }
   } else {
-    const el = document.createElement(isText ? "div" : "img");
-    el.dataset.id = item.id; el.dataset.roomId = item.roomId || "";
-    el.dataset.kind = isText ? "text" : "image";
-    if (isText) { el.className = "txtcell"; el.textContent = item.snippet || "…"; }
-    if (!(isText && item.snippet)) contentObserver.observe(el);
-    cell = el;
+    if (isVideo) {
+      cell = document.createElement("div");
+      cell.className = "videocell";
+      cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = "video";
+      const thumb = document.createElement("img");
+      thumb.style.cssText = "width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0";
+      cell.appendChild(thumb);
+      videoThumbs.add(cell);
+    } else {
+      const el = document.createElement(isText ? "div" : "img");
+      el.dataset.id = item.id; el.dataset.roomId = item.roomId || "";
+      el.dataset.kind = isText ? "text" : "image";
+      if (isText) { el.className = "txtcell"; el.textContent = item.snippet || "…"; }
+      if (!(isText && item.snippet)) contentObserver.observe(el);
+      cell = el;
+    }
   }
-  cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = isText ? "text" : "image";
+  cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = isVideo ? "video" : (isText ? "text" : "image");
   cell.onclick = () => { if (selectMode) toggleSelect(cell); else openFull(item.id, item.roomId); };
   return cell;
 }
@@ -433,6 +494,7 @@ function formatTime(ts) {
 }
 
 function getExtIcon(contentType) {
+  if (contentType.includes("video")) return "🎬";
   if (contentType.includes("pdf")) return "📕";
   if (contentType.includes("word") || contentType.includes("document")) return "📝";
   if (contentType.includes("sheet") || contentType.includes("excel")) return "📊";
@@ -474,12 +536,15 @@ async function initFeed() {
   contentObserver = new IntersectionObserver((entries) => {
     for (const e of entries) if (e.isIntersecting) {
       if (e.target.dataset.kind === "text") loadTextSnippet(e.target);
-      else loadThumb(e.target);
+      else if (e.target.dataset.kind === "video") {
+        loadVideoThumb(e.target);
+        contentObserver.unobserve(e.target);
+      } else loadThumb(e.target);
       contentObserver.unobserve(e.target);
     }
   }, { rootMargin: "200px" });
 
-  cursor = null; knownIds = new Set(); itemsById = new Map();
+  cursor = null; knownIds = new Set(); itemsById = new Map(); videoThumbs = new Set();
   const grid = document.querySelector("#grid");
   grid.className = viewMode === "list" ? "list-view" : viewMode === "small" ? "small-view" : "";
   document.querySelector("#grid").innerHTML = "";
@@ -490,6 +555,20 @@ async function initFeed() {
   };
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(poll, 20000);
+
+  // Setup filter/sort
+  $("#typeFilter").value = currentFilter;
+  $("#sortFilter").value = currentSort;
+  $("#typeFilter").onchange = () => {
+    currentFilter = $("#typeFilter").value;
+    localStorage.setItem("shotsync_filter", currentFilter);
+    initFeed();
+  };
+  $("#sortFilter").onchange = () => {
+    currentSort = $("#sortFilter").value;
+    localStorage.setItem("shotsync_sort", currentSort);
+    initFeed();
+  };
 }
 
 function fitDims(w, h, maxEdge) {
@@ -517,6 +596,11 @@ async function uploadOne(file) {
     try { full = await encode(bitmap, null, "image/jpeg", 0.92); thumb = await encode(bitmap, 480, "image/jpeg", 0.7); }
     finally { bitmap.close(); }
     fd.set("full", full, "u.jpg"); fd.set("thumb", thumb, "t.jpg");
+  } else if (file.type.startsWith("video/")) {
+    // For videos, upload as-is and generate a thumbnail server-side is complex
+    // We upload the video and create a placeholder thumb (black image)
+    fd.set("full", file, file.name);
+    fd.set("thumb", new Blob(), "empty");
   } else {
     fd.set("full", file, file.name);
     fd.set("thumb", new Blob(), "empty");
