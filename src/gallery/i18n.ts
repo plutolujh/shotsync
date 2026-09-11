@@ -47,6 +47,8 @@ const zh: Record<string, string> = {
   "viewer.copyFailed": "复制失败，请长按选择",
   "viewer.deleted": "已删除",
   "viewer.deleteFailed": "删除失败",
+  "viewer.download": "下载",
+  "viewer.docNoPreview": "此文件不支持预览，请下载查看",
 
   // Select mode
   "select.deleteCount": "删除选中 ({n})",
@@ -117,6 +119,8 @@ const en: Record<string, string> = {
   "viewer.copyFailed": "Copy failed — long-press to select",
   "viewer.deleted": "Deleted",
   "viewer.deleteFailed": "Delete failed",
+  "viewer.download": "Download",
+  "viewer.docNoPreview": "Preview not available, please download to view",
 
   // Select mode
   "select.deleteCount": "Delete ({n})",

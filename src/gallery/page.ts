@@ -6,7 +6,7 @@ const LANG_KEY = "shotsync_lang";
 
 function buildHTML(demo: boolean, demoEn: boolean): string {
   const lang: Lang = demo && demoEn ? "en" : "zh";
-  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}`;
+  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}#viewerPdf{flex:1;min-height:0}#viewerDoc{flex:1;min-height:0}`;
   return /* html */ `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -79,6 +79,13 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
     </div>
     <img id="viewerImg" class="hidden" style="flex:1;min-height:0;object-fit:contain;width:100%">
     <pre id="viewerText" class="hidden"></pre>
+    <embed id="viewerPdf" class="hidden" type="application/pdf" style="flex:1;min-height:0;width:100%;border:none">
+    <div id="viewerDoc" class="hidden" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#888;padding:20px;text-align:center">
+      <span style="font-size:48px" id="docIcon"></span>
+      <span id="docName" style="color:#eee;font-size:16px;word-break:break-all"></span>
+      <span style="font-size:13px">${i18n[lang]["viewer.docNoPreview"]}</span>
+      <button id="docDownload" style="background:#2b6cff;padding:10px 20px;border-radius:8px;border:none;color:#fff;cursor:pointer;font-size:14px">${i18n[lang]["viewer.download"]}</button>
+    </div>
   </div>
 
 <script>
@@ -194,29 +201,47 @@ function setViewMode(mode) {
 }
 
 // Full viewer
-let currentId = null, currentRoomId = null, currentKind = "image";
+let currentId = null, currentRoomId = null, currentKind = "image", currentBlob = null;
 
 async function openFull(id, roomId) {
   currentId = id; currentRoomId = roomId;
-  const v = $("#viewer"), img = $("#viewerImg"), txt = $("#viewerText");
+  const v = $("#viewer"), img = $("#viewerImg"), txt = $("#viewerText"), pdf = $("#viewerPdf"), doc = $("#viewerDoc");
   img.removeAttribute("src"); img.classList.add("hidden");
   txt.textContent = ""; txt.classList.add("hidden");
+  pdf.removeAttribute("src"); pdf.classList.add("hidden");
+  doc.classList.add("hidden");
   v.classList.remove("hidden");
+  const item = itemsById.get(id);
+  const origName = item?.origName || id;
   try {
     const imgUrl = "/i/" + id + "?size=full" + (roomId ? "&room=" + encodeURIComponent(roomId) : "");
     const res = await fetch(imgUrl, { headers: authHeaders() });
     if (!res.ok) return;
     const ct = res.headers.get("content-type") || "";
+    currentBlob = await res.blob();
     if (ct.indexOf("text/") === 0) {
       currentKind = "text";
       txt.textContent = await res.text(); txt.classList.remove("hidden");
+      $("#saveBtn").textContent = T("viewer.copy");
+    } else if (ct.includes("pdf")) {
+      currentKind = "pdf";
+      const url = URL.createObjectURL(currentBlob);
+      pdf.src = url; pdf.classList.remove("hidden");
+      $("#saveBtn").textContent = T("viewer.save");
+    } else if (ct.includes("word") || ct.includes("document") || ct.includes("sheet") || ct.includes("excel") || ct.includes("zip") || ct.includes("office")) {
+      currentKind = "doc";
+      const icon = getExtIcon(ct);
+      const nameEl = $("#docName"); if (nameEl) nameEl.textContent = origName;
+      const iconEl = $("#docIcon"); if (iconEl) iconEl.textContent = icon;
+      doc.classList.remove("hidden");
+      $("#saveBtn").textContent = T("viewer.download");
     } else {
       currentKind = "image";
-      const url = URL.createObjectURL(await res.blob());
+      const url = URL.createObjectURL(currentBlob);
       img.addEventListener("load", () => URL.revokeObjectURL(url), { once: true });
       img.src = url; img.classList.remove("hidden");
+      $("#saveBtn").textContent = T("viewer.save");
     }
-    $("#saveBtn").textContent = currentKind === "text" ? T("viewer.copy") : T("viewer.save");
   } catch {}
 }
 
@@ -240,25 +265,26 @@ document.querySelector("#saveBtn").onclick = async () => {
     catch { toast(T("viewer.copyFailed")); }
     return;
   }
-  try {
-    const res = await fetch("/i/" + currentId + "?size=full&room=" + encodeURIComponent(currentRoomId), { headers: authHeaders() });
-    if (!res.ok) { toast(T("viewer.saveFailed")); return; }
-    const blob = await res.blob();
-    const ext = (blob.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
-    const file = new File([blob], currentId + "." + ext, { type: blob.type || "image/jpeg" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file] });
-    } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = file.name;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-  } catch (e) {
-    if (e && e.name !== "AbortError") toast(T("viewer.saveFailed"));
+  const blob = currentBlob || await (await fetch("/i/" + currentId + "?size=full&room=" + encodeURIComponent(currentRoomId), { headers: authHeaders() })).blob();
+  const item = itemsById.get(currentId);
+  const origName = item?.origName || currentId;
+  const ext = (blob.type.split("/")[1] || "bin").replace("jpeg", "jpg");
+  const name = origName.includes(".") ? origName : currentId + "." + ext;
+  const file = new File([blob], name, { type: blob.type });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({ files: [file] });
+  } else {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 };
+
+document.querySelector("#docDownload")?.addEventListener("click", () => {
+  document.querySelector("#saveBtn")?.click();
+});
 
 document.querySelector("#delBtn").onclick = async () => {
   if (!currentId || !confirm(T("viewer.deleteConfirm"))) return;
@@ -402,11 +428,12 @@ function formatTime(ts) {
 }
 
 function getExtIcon(contentType) {
-  if (contentType.includes("pdf")) return "📄";
+  if (contentType.includes("pdf")) return "📕";
   if (contentType.includes("word") || contentType.includes("document")) return "📝";
   if (contentType.includes("sheet") || contentType.includes("excel")) return "📊";
   if (contentType.includes("zip") || contentType.includes("archive")) return "📦";
   if (contentType.includes("html") || contentType.includes("css") || contentType.includes("javascript")) return "💻";
+  if (contentType.includes("text/") || contentType.includes("json") || contentType.includes("xml")) return "📃";
   return "📁";
 }
 
