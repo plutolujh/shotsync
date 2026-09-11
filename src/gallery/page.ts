@@ -4,46 +4,6 @@ import { i18n, Lang } from "./i18n";
 const TOKEN_KEY = "shotsync_token";
 const LANG_KEY = "shotsync_lang";
 
-// Apply translations to all [data-i18n] elements
-function applyI18n(lang: Lang) {
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.getAttribute("data-i18n");
-    if (!key) return;
-    // Placeholder uses data-i18n-placeholder
-    if (el.hasAttribute("data-i18n-placeholder")) {
-      (el as HTMLInputElement).placeholder = t(key, lang);
-    } else if (el.tagName === "A") {
-      el.textContent = t(key, lang);
-    } else {
-      el.childNodes.length === 0 ? (el.textContent = t(key, lang)) : null;
-    }
-  });
-  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
-    const key = el.getAttribute("data-i18n-title");
-    if (key) el.setAttribute("title", t(key, lang));
-  });
-  // Button text nodes
-  const btnMap: Record<string, string> = {
-    "#tokenSave": "gate.enter",
-    "#composeSend": "compose.send",
-    "#composeCancel": "compose.cancel",
-    "#tokenReveal": "settings.reveal",
-    "#tokenCopy": "settings.copy",
-    "#logoutBtn": "settings.logout",
-    "#settingsClose": "settings.close",
-    "#shareBtn": "viewer.share",
-    "#saveBtn": "viewer.save",
-    "#delBtn": "viewer.delete",
-    "#closeBtn": "viewer.close",
-    "#cancelSelBtn": "header.cancel",
-  };
-  for (const [sel, key] of Object.entries(btnMap)) {
-    const el = document.querySelector(sel);
-    if (el) el.textContent = t(key, lang);
-  }
-  // Select/delete button text (with dynamic count) is updated separately
-}
-
 function buildHTML(demo: boolean, demoEn: boolean): string {
   const lang: Lang = demo && demoEn ? "en" : "zh";
   const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}`;
@@ -61,58 +21,58 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
 </head>
 <body>
   <div id="gate" class="hidden">
-    <div data-i18n="gate.title">${t("gate.title", lang)}</div>
-    <input id="tokenInput" type="password" placeholder="${t("gate.placeholder", lang)}" autocomplete="off">
-    <button id="tokenSave">${t("gate.enter", lang)}</button>
+    <div data-i18n="gate.title">${i18n[lang]["gate.title"]}</div>
+    <input id="tokenInput" type="password" placeholder="${i18n[lang]["gate.placeholder"]}" autocomplete="off">
+    <button id="tokenSave">${i18n[lang]["gate.enter"]}</button>
     <div id="gateErr" style="color:#ff6b6b"></div>
   </div>
 
   <header class="hidden" id="bar">
     <h1>shotsync</h1>
     <input id="fileInput" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.html,.css,.js,.json,.xml,.zip" multiple class="hidden">
-    <button id="textBtn" style="background:#444" data-i18n="header.text">${t("header.text", lang)}</button>
-    <button id="uploadBtn" data-i18n="header.upload">${t("header.upload", lang)}</button>
-    <button id="selectBtn" style="background:#444" data-i18n="header.select">${t("header.select", lang)}</button>
+    <button id="textBtn" style="background:#444" data-i18n="header.text">${i18n[lang]["header.text"]}</button>
+    <button id="uploadBtn" data-i18n="header.upload">${i18n[lang]["header.upload"]}</button>
+    <button id="selectBtn" style="background:#444" data-i18n="header.select">${i18n[lang]["header.select"]}</button>
     <button id="settingsBtn" style="background:#444" title="Settings" aria-label="Settings">⚙</button>
     <button id="langBtn">EN</button>
-    <button id="delSelBtn" class="hidden" style="background:#d23">${t("header.deleteSel", lang)}</button>
-    <button id="cancelSelBtn" class="hidden" style="background:#444" data-i18n="header.cancel">${t("header.cancel", lang)}</button>
+    <button id="delSelBtn" class="hidden" style="background:#d23">${i18n[lang]["header.deleteSel"]}</button>
+    <button id="cancelSelBtn" class="hidden" style="background:#444" data-i18n="header.cancel">${i18n[lang]["header.cancel"]}</button>
   </header>
   <main id="grid"></main>
   <div id="toast"></div>
 
   <div id="compose" class="hidden">
-    <textarea id="composeText" placeholder="${t("compose.placeholder", lang)}"></textarea>
+    <textarea id="composeText" placeholder="${i18n[lang]["compose.placeholder"]}"></textarea>
     <div class="row">
-      <button id="composeSend">${t("compose.send", lang)}</button>
-      <button id="composeCancel" style="background:#444">${t("compose.cancel", lang)}</button>
+      <button id="composeSend">${i18n[lang]["compose.send"]}</button>
+      <button id="composeCancel" style="background:#444">${i18n[lang]["compose.cancel"]}</button>
     </div>
   </div>
 
   <div id="settings" class="hidden">
     <div class="card">
-      <h2 data-i18n="settings.title">${t("settings.title", lang)}</h2>
-      <div class="kv"><span data-i18n="settings.url">${t("settings.url", lang)}</span><code id="settingsUrl"></code></div>
-      <div class="kv"><span data-i18n="settings.token">${t("settings.token", lang)}</span><code id="tokenValue"></code></div>
-      <div class="kv"><span data-i18n="settings.version">${t("settings.version", lang)}</span><code id="versionValue">v:AUTO</code></div>
-      <div class="kv"><span data-i18n="settings.apiDocs">${t("settings.apiDocs", lang)}</span><a id="apiFormatsLink" href="/api/formats" target="_blank">${t("settings.apiDocsLink", lang)}</a></div>
+      <h2 data-i18n="settings.title">${i18n[lang]["settings.title"]}</h2>
+      <div class="kv"><span data-i18n="settings.url">${i18n[lang]["settings.url"]}</span><code id="settingsUrl"></code></div>
+      <div class="kv"><span data-i18n="settings.token">${i18n[lang]["settings.token"]}</span><code id="tokenValue"></code></div>
+      <div class="kv"><span data-i18n="settings.version">${i18n[lang]["settings.version"]}</span><code id="versionValue">v:AUTO</code></div>
+      <div class="kv"><span data-i18n="settings.apiDocs">${i18n[lang]["settings.apiDocs"]}</span><a id="apiFormatsLink" href="/api/formats" target="_blank">${i18n[lang]["settings.apiDocsLink"]}</a></div>
       <div class="row">
-        <button id="tokenReveal" style="background:#444">${t("settings.reveal", lang)}</button>
-        <button id="tokenCopy">${t("settings.copy", lang)}</button>
+        <button id="tokenReveal" style="background:#444">${i18n[lang]["settings.reveal"]}</button>
+        <button id="tokenCopy">${i18n[lang]["settings.copy"]}</button>
       </div>
       <div class="row" style="justify-content:space-between;margin-top:6px">
-        <button id="logoutBtn" style="background:#d23">${t("settings.logout", lang)}</button>
-        <button id="settingsClose" style="background:#444">${t("settings.close", lang)}</button>
+        <button id="logoutBtn" style="background:#d23">${i18n[lang]["settings.logout"]}</button>
+        <button id="settingsClose" style="background:#444">${i18n[lang]["settings.close"]}</button>
       </div>
     </div>
   </div>
 
   <div id="viewer" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10">
     <div style="display:flex;justify-content:flex-end;gap:10px;padding:10px">
-      <button id="shareBtn" style="background:#0a8a5f">${t("viewer.share", lang)}</button>
-      <button id="saveBtn" style="background:#2b6cff">${t("viewer.save", lang)}</button>
-      <button id="delBtn" style="background:#d23">${t("viewer.delete", lang)}</button>
-      <button id="closeBtn" style="background:#444">${t("viewer.close", lang)}</button>
+      <button id="shareBtn" style="background:#0a8a5f">${i18n[lang]["viewer.share"]}</button>
+      <button id="saveBtn" style="background:#2b6cff">${i18n[lang]["viewer.save"]}</button>
+      <button id="delBtn" style="background:#d23">${i18n[lang]["viewer.delete"]}</button>
+      <button id="closeBtn" style="background:#444">${i18n[lang]["viewer.close"]}</button>
     </div>
     <img id="viewerImg" class="hidden" style="flex:1;min-height:0;object-fit:contain;width:100%">
     <pre id="viewerText" class="hidden"></pre>
