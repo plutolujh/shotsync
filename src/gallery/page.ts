@@ -442,7 +442,8 @@ function makeCell(item) {
     cell.appendChild(label);
     const meta = document.createElement("span");
     meta.className = "list-meta";
-    meta.textContent = formatTime(item.time);
+    const sizeStr = formatSize(item.size);
+    meta.textContent = sizeStr ? sizeStr + " • " + formatTime(item.time) : formatTime(item.time);
     meta.style.cssText = "flex-shrink:0";
     cell.appendChild(meta);
     // For images/videos, show thumb inline
@@ -476,16 +477,20 @@ function makeCell(item) {
       // Doc/PDF/zip etc - show icon
       cell = document.createElement("div");
       cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = "doc";
-      cell.style.cssText = "width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px";
+      cell.style.cssText = "width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px";
       const icon = document.createElement("span");
       icon.textContent = getExtIcon(ct);
-      icon.style.cssText = "font-size:28px";
+      icon.style.cssText = "font-size:24px";
       cell.appendChild(icon);
       const name = document.createElement("span");
       const ext = (item.origName || item.id).split(".").pop()?.toUpperCase() || "";
       name.textContent = ext;
-      name.style.cssText = "font-size:10px;color:#aaa";
+      name.style.cssText = "font-size:10px;color:#aaa;max-width:100%;overflow:hidden;text-overflow:ellipsis";
       cell.appendChild(name);
+      const size = document.createElement("span");
+      size.textContent = formatSize(item.size);
+      size.style.cssText = "font-size:9px;color:#666";
+      cell.appendChild(size);
     }
   }
   cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = isVideo ? "video" : (isText ? "text" : "image");
@@ -502,6 +507,14 @@ function formatTime(ts) {
   const hh = String(d.getHours()).padStart(2,"0");
   const mi = String(d.getMinutes()).padStart(2,"0");
   return isToday ? hh+":"+mi : mm+"-"+dd+" "+hh+":"+mi;
+}
+
+function formatSize(bytes) {
+  if (!bytes) return "";
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  return (bytes / (1024 * 1024 * 1024)).toFixed(1) + " GB";
 }
 
 function getExtIcon(contentType) {
