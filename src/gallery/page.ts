@@ -62,7 +62,7 @@ export const galleryHTML = /* html */ `<!doctype html>
 
   <header class="hidden" id="bar">
     <h1>shotsync</h1>
-    <input id="fileInput" type="file" accept="image/*" multiple class="hidden">
+    <input id="fileInput" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.html,.css,.js,.json,.xml,.zip" multiple class="hidden">
     <button id="textBtn" style="background:#444">✎ 文字</button>
     <button id="uploadBtn">+ 图片</button>
     <button id="selectBtn" style="background:#444">选择</button>
@@ -425,17 +425,27 @@ async function encode(bitmap, maxEdge, type, quality) {
 }
 
 async function uploadOne(file) {
-  const bitmap = await createImageBitmap(file);          // Browser decodes (including HEIC on iOS)
-  let full, thumb;
-  try {
-    full = await encode(bitmap, null, "image/jpeg", 0.92);
-    thumb = await encode(bitmap, 480, "image/jpeg", 0.7);
-  } finally {
-    bitmap.close();                                      // release decoded pixel buffer (mobile memory)
-  }
   const fd = new FormData();
-  fd.set("full", full, "u.jpg");
-  fd.set("thumb", thumb, "t.jpg");
+
+  // Check if it's an image (for browser-safe image types)
+  if (file.type.startsWith("image/") && !file.type.includes("svg")) {
+    const bitmap = await createImageBitmap(file);          // Browser decodes (including HEIC on iOS)
+    let full, thumb;
+    try {
+      full = await encode(bitmap, null, "image/jpeg", 0.92);
+      thumb = await encode(bitmap, 480, "image/jpeg", 0.7);
+    } finally {
+      bitmap.close();                                      // release decoded pixel buffer (mobile memory)
+    }
+    fd.set("full", full, "u.jpg");
+    fd.set("thumb", thumb, "t.jpg");
+  } else {
+    // Non-image files: upload directly with original filename
+    fd.set("full", file, file.name);
+    // No thumb for non-image files
+    fd.set("thumb", new Blob(), "empty");  // placeholder to indicate no thumb
+  }
+
   const res = await fetch("/api/upload", { method: "POST", headers: { ...authHeaders(), "x-source": "pwa" }, body: fd });
   if (!res.ok) throw new Error("upload failed");
   return (await res.json()).id;

@@ -1,16 +1,39 @@
 export const INV_BASE = 8_000_000_000_000_000;
 
 export const EXT_BY_TYPE: Record<string, string> = {
+  // Images
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/webp": "webp",
+  "image/gif": "gif",
+  "image/svg+xml": "svg",
+  "image/bmp": "bmp",
+  "image/x-icon": "ico",
+  // Text
   "text/plain": "txt",
+  "text/html": "html",
+  "text/css": "css",
+  "text/javascript": "js",
+  "application/json": "json",
+  "application/xml": "xml",
+  // Documents
+  "application/pdf": "pdf",
+  "application/zip": "zip",
+  "application/msword": "doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+  "application/vnd.ms-excel": "xls",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+  // Fallback for unrecognized MIME types (use extension from filename)
+  "application/octet-stream": "",
 };
 
 // Candidate extensions a `full/<id>.<ext>` object may carry. Used when probing
 // for an object whose ext is unknown (image serve / delete). Shared so the
 // serve and delete paths can never drift out of sync.
-export const FULL_EXTS = ["png", "jpg", "webp", "txt"];
+export const FULL_EXTS = ["png", "jpg", "webp", "gif", "svg", "bmp", "ico", "txt", "html", "css", "js", "json", "xml", "pdf", "zip", "doc", "docx", "xls", "xlsx"];
+
+// Allowed extensions map (reverse lookup from EXT_BY_TYPE)
+export const ALLOWED_EXTS = new Set(FULL_EXTS);
 
 export function makeId(epochMs: number, rand: string): string {
   const inv = (INV_BASE - epochMs).toString().padStart(16, "0");

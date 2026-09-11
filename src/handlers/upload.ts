@@ -1,8 +1,21 @@
 import { Env, err, json } from "../responses";
 import { isAuthed } from "../auth";
-import { EXT_BY_TYPE, fullKey, makeId, randSuffix, thumbKey } from "../ids";
+import { ALLOWED_EXTS, EXT_BY_TYPE, fullKey, makeId, randSuffix, thumbKey } from "../ids";
 
 const MAX_FULL_BYTES = 25 * 1024 * 1024;
+
+function getExtFromMime(mimeType: string, filename: string): string | null {
+  const ext = EXT_BY_TYPE[mimeType];
+  if (ext) return ext;
+
+  // Fallback: try to get extension from filename
+  const dot = filename.lastIndexOf(".");
+  if (dot !== -1) {
+    const fileExt = filename.slice(dot + 1).toLowerCase();
+    if (ALLOWED_EXTS.has(fileExt)) return fileExt;
+  }
+  return null;
+}
 
 export async function handleUpload(request: Request, env: Env): Promise<Response> {
   if (!isAuthed(request, env)) return err(401, "unauthorized");
@@ -32,12 +45,19 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
   // Normalize the MIME: strip any parameters like "; charset=utf-8" so a
   // non-PWA client (curl, Shortcut) isn't silently 415'd on text uploads.
   const mimeType = full.type.split(";")[0].trim().toLowerCase();
-  const ext = EXT_BY_TYPE[mimeType];
+  const ext = getExtFromMime(mimeType, full.name);
   if (!ext) return err(415, `unsupported type: ${full.type}`);
   if (full.size > MAX_FULL_BYTES) return err(413, "full too large");
 
   const thumbEntry = form.get("thumb");
-  const hasThumb = !!(thumbEntry && typeof thumbEntry === "object" && "stream" in thumbEntry && "name" in thumbEntry);
+  // Check if thumb is a valid object with content (not empty blob)
+  const hasThumb = !!(
+    thumbEntry &&
+    typeof thumbEntry === "object" &&
+    "stream" in thumbEntry &&
+    "size" in thumbEntry &&
+    (thumbEntry as File).size > 0
+  );
 
   const id = makeId(Date.now(), randSuffix());
   const meta = {
