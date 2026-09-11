@@ -6,7 +6,7 @@ const LANG_KEY = "shotsync_lang";
 
 function buildHTML(demo: boolean, demoEn: boolean): string {
   const lang: Lang = demo && demoEn ? "en" : "zh";
-  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}`;
+  const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,system-ui,sans-serif}header{position:sticky;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;background:#181818;border-bottom:1px solid #2a2a2a}header h1{font-size:16px;margin:0;flex:1}button{background:#2b6cff;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button:hover{opacity:.9}button:active{opacity:.8}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;padding:6px}#grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer}#grid img:hover{opacity:.9}#gate{position:fixed;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;background:#111;padding:24px}#gate input{padding:10px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;width:min(360px,90vw)}.hidden{display:none!important}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}#grid .txtcell{width:100%;aspect-ratio:1;border-radius:6px;background:#1c2030;color:#cdd3e0;padding:8px;font-size:12px;line-height:1.35;overflow:hidden;cursor:pointer;white-space:pre-wrap;word-break:break-word;display:flex;align-items:flex-start}#viewerText{flex:1;min-height:0;overflow:auto;margin:0;padding:16px;white-space:pre-wrap;word-break:break-word;color:#eee;font:14px/1.6 ui-monospace,monospace}#compose{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;flex-direction:column;gap:10px;padding:12px}#compose textarea{flex:1;min-height:0;resize:none;padding:12px;border-radius:8px;border:1px solid #333;background:#1c1c1c;color:#eee;font-size:15px}#compose .row{display:flex;justify-content:flex-end;gap:10px}#settings{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}#settings .card{width:100%;max-width:420px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}#settings h2{font-size:16px;margin:0}#settings .kv{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#aaa}#settings code{font:13px/1.4 ui-monospace,Menlo,monospace;color:#eee;word-break:break-all;background:#222;padding:8px;border-radius:8px;user-select:all}#settings .row{display:flex;justify-content:flex-end;gap:10px}#settings a{color:#2b6cff}#langBtn{font-size:13px;padding:6px 10px;background:#333}.view-btn{font-size:13px;padding:6px 8px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer}.view-btn.active{background:#2b6cff}.view-btn:hover{opacity:.85}#grid.list-view{display:flex;flex-direction:column;gap:2px;padding:4px}#grid.list-view>*{width:100%;aspect-ratio:unset;border-radius:4px;background:#1c2030;padding:8px 10px;font-size:13px;line-height:1.4;color:#cdd3e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}#grid.list-view>img{display:none!important}#grid.list-view .list-file{flex:1;overflow:hidden;text-overflow:ellipsis}#grid.list-view .list-meta{color:#888;font-size:12px;white-space:nowrap}#grid.small-view{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;padding:4px}#grid.small-view img{aspect-ratio:1;border-radius:4px}#grid.small-view .txtcell{aspect-ratio:1;font-size:10px;padding:4px}#grid .sel{outline:3px solid #2b6cff;outline-offset:-3px;opacity:.8}#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;flex-direction:column;z-index:10}#viewerImg{flex:1;min-height:0;object-fit:contain;width:100%}`;
   return /* html */ `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -35,6 +35,9 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
     <button id="selectBtn" style="background:#444" data-i18n="header.select">${i18n[lang]["header.select"]}</button>
     <button id="settingsBtn" style="background:#444" title="Settings" aria-label="Settings">⚙</button>
     <button id="langBtn">EN</button>
+    <button id="viewSmall" class="view-btn active" title="${i18n[lang]["view.small"]}">▣</button>
+    <button id="viewLarge" class="view-btn" title="${i18n[lang]["view.large"]}">⬛</button>
+    <button id="viewList" class="view-btn" title="${i18n[lang]["view.list"]}">☰</button>
     <button id="delSelBtn" class="hidden" style="background:#d23">${i18n[lang]["header.deleteSel"]}</button>
     <button id="cancelSelBtn" class="hidden" style="background:#444" data-i18n="header.cancel">${i18n[lang]["header.cancel"]}</button>
   </header>
@@ -171,6 +174,24 @@ $("#logoutBtn").onclick = () => {
   location.reload();
 };
 $("#langBtn").onclick = () => setLang(lang === "zh" ? "en" : "zh");
+$("#viewSmall").onclick = () => setViewMode("small");
+$("#viewLarge").onclick = () => setViewMode("large");
+$("#viewList").onclick = () => setViewMode("list");
+
+function setViewMode(mode) {
+  viewMode = mode;
+  localStorage.setItem("shotsync_view", mode);
+  const grid = document.querySelector("#grid");
+  grid.className = mode === "list" ? "list-view" : mode === "small" ? "small-view" : "";
+  document.querySelectorAll(".view-btn").forEach((b) => b.classList.remove("active"));
+  const btnMap = { small: "#viewSmall", large: "#viewLarge", list: "#viewList" };
+  const btn = document.querySelector(btnMap[mode]);
+  if (btn) btn.classList.add("active");
+  // Rebuild all cells in new view mode
+  grid.innerHTML = "";
+  knownIds.clear();
+  appendItems([...itemsById.values()], false);
+}
 
 // Full viewer
 let currentId = null, currentRoomId = null, currentKind = "image";
@@ -253,6 +274,8 @@ document.querySelector("#delBtn").onclick = async () => {
 
 // Gallery feed
 let cursor = null, loading = false, knownIds = new Set(), pollTimer = null;
+let viewMode = localStorage.getItem("shotsync_view") || "small";
+let itemsById = new Map();
 let contentObserver;
 
 // Multi-select
@@ -322,13 +345,69 @@ async function loadTextSnippet(card) {
 
 function makeCell(item) {
   const isText = (item.contentType || "").indexOf("text/") === 0;
-  const el = document.createElement(isText ? "div" : "img");
-  el.dataset.id = item.id; el.dataset.roomId = item.roomId || "";
-  el.dataset.kind = isText ? "text" : "image";
-  if (isText) { el.className = "txtcell"; el.textContent = item.snippet || "…"; }
-  el.onclick = () => { if (selectMode) toggleSelect(el); else openFull(item.id, item.roomId); };
-  if (!(isText && item.snippet)) contentObserver.observe(el);
-  return el;
+  const isImage = (item.contentType || "").startsWith("image/");
+  const isList = viewMode === "list";
+
+  let cell;
+  if (isList) {
+    cell = document.createElement("div");
+    cell.style.cssText = "display:flex;align-items:center;gap:10px;flex:1;overflow:hidden;cursor:pointer";
+    if (!isImage) {
+      const icon = document.createElement("span");
+      icon.textContent = getExtIcon(item.contentType);
+      icon.style.cssText = "font-size:16px;flex-shrink:0";
+      cell.appendChild(icon);
+    }
+    const label = document.createElement("span");
+    label.className = "list-file";
+    label.textContent = item.origName || (isText ? (item.snippet || "…").slice(0, 40) : item.id);
+    label.style.cssText = "flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+    cell.appendChild(label);
+    const meta = document.createElement("span");
+    meta.className = "list-meta";
+    meta.textContent = formatTime(item.time);
+    meta.style.cssText = "flex-shrink:0";
+    cell.appendChild(meta);
+    // For images, show thumb inline
+    if (isImage) {
+      const thumb = document.createElement("img");
+      thumb.style.cssText = "width:36px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0";
+      thumb.dataset.id = item.id; thumb.dataset.roomId = item.roomId || ""; thumb.dataset.kind = "image";
+      thumb.onclick = () => { if (selectMode) toggleSelect(thumb); else openFull(item.id, item.roomId); };
+      cell.insertBefore(thumb, cell.firstChild);
+      contentObserver.observe(thumb);
+    }
+  } else {
+    const el = document.createElement(isText ? "div" : "img");
+    el.dataset.id = item.id; el.dataset.roomId = item.roomId || "";
+    el.dataset.kind = isText ? "text" : "image";
+    if (isText) { el.className = "txtcell"; el.textContent = item.snippet || "…"; }
+    if (!(isText && item.snippet)) contentObserver.observe(el);
+    cell = el;
+  }
+  cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.kind = isText ? "text" : "image";
+  cell.onclick = () => { if (selectMode) toggleSelect(cell); else openFull(item.id, item.roomId); };
+  return cell;
+}
+
+function formatTime(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd = String(d.getDate()).padStart(2,"0");
+  const hh = String(d.getHours()).padStart(2,"0");
+  const mi = String(d.getMinutes()).padStart(2,"0");
+  return isToday ? hh+":"+mi : mm+"-"+dd+" "+hh+":"+mi;
+}
+
+function getExtIcon(contentType) {
+  if (contentType.includes("pdf")) return "📄";
+  if (contentType.includes("word") || contentType.includes("document")) return "📝";
+  if (contentType.includes("sheet") || contentType.includes("excel")) return "📊";
+  if (contentType.includes("zip") || contentType.includes("archive")) return "📦";
+  if (contentType.includes("html") || contentType.includes("css") || contentType.includes("javascript")) return "💻";
+  return "📁";
 }
 
 function appendItems(items, prepend) {
@@ -336,6 +415,7 @@ function appendItems(items, prepend) {
   for (const it of items) {
     if (knownIds.has(it.id)) continue;
     knownIds.add(it.id);
+    itemsById.set(it.id, it);
     const cell = makeCell(it);
     if (prepend) grid.prepend(cell); else grid.append(cell);
   }
@@ -367,7 +447,9 @@ async function initFeed() {
     }
   }, { rootMargin: "200px" });
 
-  cursor = null; knownIds = new Set();
+  cursor = null; knownIds = new Set(); itemsById = new Map();
+  const grid = document.querySelector("#grid");
+  grid.className = viewMode === "list" ? "list-view" : viewMode === "small" ? "small-view" : "";
   document.querySelector("#grid").innerHTML = "";
   await loadMore();
 

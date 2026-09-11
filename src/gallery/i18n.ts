@@ -63,6 +63,11 @@ const zh: Record<string, string> = {
   "demo.title": "shotsync · 只读演示池",
   "demo.deploy": "5 分钟部署自己的 →",
   "demo.close": "关闭",
+
+  // View modes
+  "view.small": "小图",
+  "view.large": "大图",
+  "view.list": "列表",
 };
 
 const en: Record<string, string> = {
@@ -128,6 +133,11 @@ const en: Record<string, string> = {
   "demo.title": "shotsync · read-only demo",
   "demo.deploy": "Deploy your own in ~5 min →",
   "demo.close": "Close",
+
+  // View modes
+  "view.small": "Small",
+  "view.large": "Large",
+  "view.list": "List",
 };
 
 export const i18n = { zh, en };
