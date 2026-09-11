@@ -221,7 +221,7 @@ async function openFull(id, roomId) {
     currentBlob = await res.blob();
     if (ct.indexOf("text/") === 0) {
       currentKind = "text";
-      txt.textContent = await res.text(); txt.classList.remove("hidden");
+      txt.textContent = await currentBlob.text(); txt.classList.remove("hidden");
       $("#saveBtn").textContent = T("viewer.copy");
     } else if (ct.includes("pdf")) {
       currentKind = "pdf";
