@@ -5,72 +5,74 @@ import { ALLOWED_EXTS, EXT_BY_TYPE, fullKey, makeId, randSuffix, thumbKey } from
 const MAX_FULL_BYTES = 25 * 1024 * 1024;
 
 // Strip EXIF and other metadata from JPEG to protect privacy
+// Uses iterative approach to avoid stack overflow on deeply nested markers
 async function stripExif(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
-  try {
-    const reader = stream.getReader();
-    const chunks: Uint8Array[] = [];
-    let total = 0;
-    let result: ReadableStreamReadResult<Uint8Array>;
-    do {
-      result = await reader.read();
-      if (result.value) {
-        chunks.push(result.value);
-        total += result.value.byteLength;
-      }
-    } while (!result.done);
-
-    const buf = new Uint8Array(total);
-    let offset = 0;
-    for (const chunk of chunks) {
-      buf.set(chunk, offset);
-      offset += chunk.byteLength;
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  let result: ReadableStreamReadResult<Uint8Array>;
+  do {
+    result = await reader.read();
+    if (result.value) {
+      chunks.push(result.value);
+      total += result.value.byteLength;
     }
+  } while (!result.done);
 
-    // Not a JPEG — return as-is
-    if (buf[0] !== 0xff || buf[1] !== 0xd8) {
-      return buf;
-    }
-
-    const out: number[] = [0xff, 0xd8]; // SOI
-    let i = 2;
-    while (i < buf.length - 1) {
-      if (buf[i] !== 0xff) {
-        // Scan data — copy rest and exit
-        out.push(...buf.slice(i));
-        break;
-      }
-      const marker = buf[i + 1];
-      // SOS (Start of Scan) or EOI — copy and stop
-      if (marker === 0xda || marker === 0xd9) {
-        out.push(...buf.slice(i));
-        break;
-      }
-      // RST markers (no length)
-      if (marker >= 0xd0 && marker <= 0xd7) {
-        out.push(buf[i], buf[i + 1]);
-        i += 2;
-        continue;
-      }
-      // Any other marker — has 2-byte length
-      if (i + 3 >= buf.length) break;
-      const len = (buf[i + 2] << 8) | buf[i + 3];
-      // Drop APP0-15 (metadata: EXIF, ICC, IPTC, XMP, etc.)
-      if (marker >= 0xe0 && marker <= 0xef) {
-        i += 2 + len;
-        continue;
-      }
-      // Keep DQT, DHT, DNL, DRI, etc.
-      out.push(buf[i], buf[i + 1], buf[i + 2], buf[i + 3]);
-      out.push(...buf.slice(i + 4, i + 2 + len));
-      i += 2 + len;
-    }
-
-    return new Uint8Array(out);
-  } catch (e) {
-    // If EXIF stripping fails, return empty — upload will likely fail anyway
-    console.error("EXIF strip error:", e);
-    throw e;
+  const buf = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    buf.set(chunk, offset);
+    offset += chunk.byteLength;
   }
+
+  // Not a JPEG — return as-is
+  if (buf[0] !== 0xff || buf[1] !== 0xd8) {
+    return buf;
+  }
+
+  // Use Uint8Array for output to avoid spread operator stack issues
+  const out: number[] = [0xff, 0xd8]; // SOI
+  let i = 2;
+  let iterations = 0;
+  const maxIterations = 10000; // Safety limit to prevent infinite loops
+
+  while (i < buf.length - 1 && iterations < maxIterations) {
+    iterations++;
+    if (buf[i] !== 0xff) {
+      // Scan data — copy rest and exit
+      for (let j = i; j < buf.length; j++) out.push(buf[j]);
+      break;
+    }
+    const marker = buf[i + 1];
+    // SOS (Start of Scan) or EOI — copy and stop
+    if (marker === 0xda || marker === 0xd9) {
+      for (let j = i; j < buf.length; j++) out.push(buf[j]);
+      break;
+    }
+    // RST markers (no length)
+    if (marker >= 0xd0 && marker <= 0xd7) {
+      out.push(buf[i], buf[i + 1]);
+      i += 2;
+      continue;
+    }
+    // Any other marker — has 2-byte length
+    if (i + 3 >= buf.length) break;
+    const len = (buf[i + 2] << 8) | buf[i + 3];
+    // Drop APP0-15 (metadata: EXIF, ICC, IPTC, XMP, etc.)
+    if (marker >= 0xe0 && marker <= 0xef) {
+      i += 2 + len;
+      continue;
+    }
+    // Keep DQT, DHT, DNL, DRI, etc.
+    out.push(buf[i], buf[i + 1], buf[i + 2], buf[i + 3]);
+    for (let j = i + 4; j < i + 2 + len && j < buf.length; j++) {
+      out.push(buf[j]);
+    }
+    i += 2 + len;
+  }
+
+  return new Uint8Array(out);
 }
 
 function getExtFromMime(mimeType: string, filename: string): string | null {
