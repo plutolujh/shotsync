@@ -370,12 +370,15 @@ async function loadVideoThumb(cell) {
   if (folder !== "_root") thumbUrl += "&folder=" + encodeURIComponent(folder);
   let fullUrl = "/i/" + id + "?size=full&room=" + encodeURIComponent(roomId);
   if (folder !== "_root") fullUrl += "&folder=" + encodeURIComponent(folder);
+  console.log("[loadVideoThumb]", { id, roomId, folder, thumbUrl, fullUrl });
 
   try {
     const res = await fetch(thumbUrl, { headers: authHeaders() });
+    console.log("[loadVideoThumb] thumb fetch:", res.status, res.statusText);
     if (res.ok) {
       const blobUrl = URL.createObjectURL(await res.blob());
       const img = cell.querySelector("img");
+      console.log("[loadVideoThumb] thumb ok, img found:", !!img);
       if (img) {
         img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
         img.src = blobUrl;
@@ -384,18 +387,23 @@ async function loadVideoThumb(cell) {
       return;
     }
     // Thumb not found: fetch video and capture a frame via canvas
+    console.log("[loadVideoThumb] fetching full video:", fullUrl);
     const videoRes = await fetch(fullUrl, { headers: authHeaders() });
+    console.log("[loadVideoThumb] full fetch:", videoRes.status, videoRes.statusText);
     if (!videoRes.ok) { videoThumbs.delete(cell); return; }
     const videoBlob = await videoRes.blob();
+    console.log("[loadVideoThumb] video blob size:", videoBlob.size);
     const videoEl = document.createElement("video");
     videoEl.muted = true;
     videoEl.preload = "metadata";
     const videoObjUrl = URL.createObjectURL(videoBlob);
     const thumbBlob = await new Promise((resolve, reject) => {
       videoEl.onloadedmetadata = () => {
+        console.log("[loadVideoThumb] video metadata:", videoEl.videoWidth, videoEl.videoHeight, videoEl.duration);
         videoEl.currentTime = Math.min(0.5, videoEl.duration * 0.1);
       };
       videoEl.onseeked = () => {
+        console.log("[loadVideoThumb] video seeked, dimensions:", videoEl.videoWidth, videoEl.videoHeight);
         try {
           const canvas = document.createElement("canvas");
           canvas.width = videoEl.videoWidth || 320;
@@ -403,18 +411,20 @@ async function loadVideoThumb(cell) {
           canvas.getContext("2d").drawImage(videoEl, 0, 0);
           canvas.toBlob(blob => {
             URL.revokeObjectURL(videoObjUrl);
+            console.log("[loadVideoThumb] canvas blob:", blob ? blob.size : null);
             resolve(blob);
           }, "image/jpeg", 0.7);
-        } catch { URL.revokeObjectURL(videoObjUrl); reject(new Error("canvas failed")); }
+        } catch (e) { console.error("[loadVideoThumb] canvas error:", e); URL.revokeObjectURL(videoObjUrl); reject(new Error("canvas failed")); }
       };
-      videoEl.onerror = () => { URL.revokeObjectURL(videoObjUrl); reject(new Error("video load failed")); };
+      videoEl.onerror = (e) => { console.error("[loadVideoThumb] video error:", e); URL.revokeObjectURL(videoObjUrl); reject(new Error("video load failed")); };
       videoEl.src = videoObjUrl;
     });
     if (thumbBlob) {
       const img = cell.querySelector("img");
+      console.log("[loadVideoThumb] setting img src, img found:", !!img);
       if (img) img.src = URL.createObjectURL(thumbBlob);
     }
-  } catch {}
+  } catch (e) { console.error("[loadVideoThumb] error:", e); }
   videoThumbs.delete(cell);
 }
 

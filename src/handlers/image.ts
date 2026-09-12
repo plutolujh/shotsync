@@ -59,11 +59,13 @@ export async function handleImage(request: Request, env: Env, id: string): Promi
   // Return 404 if nothing found
   if (!obj) return err(404, "not found");
 
-  // Return image with proper headers
+  // Return image with proper headers (include CORS for cross-origin canvas capture)
   return new Response(obj.body, {
     headers: {
       "content-type": obj.httpMetadata?.contentType || "application/octet-stream",
       "cache-control": "private, max-age=31536000, immutable",
+      "access-control-allow-origin": "*",
+      "access-control-allow-headers": "Authorization, Content-Type",
     },
   });
 }
