@@ -18,8 +18,9 @@ export async function handleRooms(request: Request, env: Env): Promise<Response>
 
     for (const obj of res.objects) {
       // Key format: full/<roomId>/... or full/<roomId>/<folder>/...
+      // Only 2 parts means legacy: full/.ext (no roomId) — skip those.
       const parts = obj.key.split("/");
-      if (parts.length >= 2) {
+      if (parts.length >= 3) {
         rooms.add(parts[1]);
       }
     }
