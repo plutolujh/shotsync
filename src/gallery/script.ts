@@ -366,16 +366,53 @@ async function loadThumb(img) {
 
 async function loadVideoThumb(cell) {
   const id = cell.dataset.id, roomId = cell.dataset.roomId, folder = cell.dataset.folder || "_root";
-  let url = "/i/" + id + "?size=thumb&room=" + encodeURIComponent(roomId);
-  if (folder !== "_root") url += "&folder=" + encodeURIComponent(folder);
+  let thumbUrl = "/i/" + id + "?size=thumb&room=" + encodeURIComponent(roomId);
+  if (folder !== "_root") thumbUrl += "&folder=" + encodeURIComponent(folder);
+  let fullUrl = "/i/" + id + "?size=full&room=" + encodeURIComponent(roomId);
+  if (folder !== "_root") fullUrl += "&folder=" + encodeURIComponent(folder);
+
   try {
-    const res = await fetch(url, { headers: authHeaders() });
-    if (!res.ok) return;
-    const blobUrl = URL.createObjectURL(await res.blob());
-    const img = cell.querySelector("img");
-    if (img) {
-      img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
-      img.src = blobUrl;
+    const res = await fetch(thumbUrl, { headers: authHeaders() });
+    if (res.ok) {
+      const blobUrl = URL.createObjectURL(await res.blob());
+      const img = cell.querySelector("img");
+      if (img) {
+        img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
+        img.src = blobUrl;
+      }
+      videoThumbs.delete(cell);
+      return;
+    }
+    // Thumb not found: fetch video and capture a frame via canvas
+    const videoRes = await fetch(fullUrl, { headers: authHeaders() });
+    if (!videoRes.ok) { videoThumbs.delete(cell); return; }
+    const videoBlob = await videoRes.blob();
+    const videoEl = document.createElement("video");
+    videoEl.muted = true;
+    videoEl.preload = "metadata";
+    const videoObjUrl = URL.createObjectURL(videoBlob);
+    const thumbBlob = await new Promise((resolve, reject) => {
+      videoEl.onloadedmetadata = () => {
+        videoEl.currentTime = Math.min(0.5, videoEl.duration * 0.1);
+      };
+      videoEl.onseeked = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = videoEl.videoWidth || 320;
+          canvas.height = videoEl.videoHeight || 180;
+          canvas.getContext("2d").drawImage(videoEl, 0, 0);
+          canvas.toBlob(blob => {
+            URL.revokeObjectURL(videoObjUrl);
+            resolve(blob);
+          }, "image/jpeg", 0.7);
+        } catch { URL.revokeObjectURL(videoObjUrl); reject(new Error("canvas failed")); }
+      };
+      videoEl.onerror = () => { URL.revokeObjectURL(videoObjUrl); reject(new Error("video load failed")); };
+      videoEl.src = videoObjUrl;
+    });
+    if (thumbBlob) {
+      const img = cell.querySelector("img");
+      if (img) img.src = URL.createObjectURL(thumbBlob);
     }
   } catch {}
   videoThumbs.delete(cell);
