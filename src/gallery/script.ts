@@ -540,10 +540,17 @@ async function poll() {
   } catch {}
 }
 
-// Folder navigation
+// Folder navigation — only shown when inside a subfolder
 function updateBreadcrumb() {
   const bc = $("#breadcrumb");
   bc.innerHTML = "";
+  
+  // At root level: hide breadcrumb entirely
+  if (currentFolderPath === "_root") {
+    bc.style.display = "none";
+    return;
+  }
+  bc.style.display = "";
   
   const rootLink = document.createElement("a");
   rootLink.href = "#";
@@ -567,16 +574,14 @@ function updateBreadcrumb() {
     bc.appendChild(link);
   }
   
-  if (currentFolderPath !== "_root") {
-    const sep = document.createElement("span");
-    sep.textContent = "/";
-    bc.appendChild(sep);
-    
-    const current = document.createElement("span");
-    current.className = "current";
-    current.textContent = folderPath[folderPath.length - 1] || currentFolderPath;
-    bc.appendChild(current);
-  }
+  const sep = document.createElement("span");
+  sep.textContent = "/";
+  bc.appendChild(sep);
+  
+  const current = document.createElement("span");
+  current.className = "current";
+  current.textContent = folderPath[folderPath.length - 1] || currentFolderPath;
+  bc.appendChild(current);
 }
 
 async function navigateToFolder(folder) {
