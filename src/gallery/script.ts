@@ -757,6 +757,33 @@ async function encode(bitmap, maxEdge, type, quality) {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 }
 
+async function captureVideoThumb(file) {
+  const video = document.createElement("video");
+  video.preload = "metadata";
+  video.muted = true;
+  video.playsInline = true;
+  const url = URL.createObjectURL(file);
+  video.src = url;
+  try {
+    await new Promise((res, rej) => {
+      video.onloadedmetadata = res;
+      video.onerror = rej;
+      video.load();
+    });
+    video.currentTime = Math.min(0.5, video.duration * 0.1);
+    await new Promise((res, rej) => {
+      video.onseeked = res;
+      video.onerror = rej;
+    });
+    const bitmap = await createImageBitmap(video);
+    const thumb = await encode(bitmap, 480, "image/jpeg", 0.7);
+    bitmap.close();
+    return thumb;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 async function uploadOne(file) {
   const fd = new FormData();
   if (file.type.startsWith("image/") && !file.type.includes("svg")) {
@@ -767,7 +794,9 @@ async function uploadOne(file) {
     fd.set("full", full, "u.jpg"); fd.set("thumb", thumb, "t.jpg");
   } else if (file.type.startsWith("video/")) {
     fd.set("full", file, file.name);
-    fd.set("thumb", new Blob(), "empty");
+    let thumb;
+    try { thumb = await captureVideoThumb(file); } catch { thumb = new Blob(); }
+    fd.set("thumb", thumb, "t.jpg");
   } else {
     fd.set("full", file, file.name);
     fd.set("thumb", new Blob(), "empty");
