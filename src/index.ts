@@ -7,6 +7,7 @@ import { handleDeleteRoom } from "./handlers/delroom";
 import { handleShareCreate, handleSharedItem } from "./handlers/share";
 import { handleFormats } from "./handlers/formats";
 import { handleFolderList, handleFolderCreate, handleFolderDelete } from "./handlers/folder";
+import { handleRooms } from "./handlers/rooms";
 import { galleryDemoHTML, galleryHTML } from "./gallery/page";
 import { manifestJSON } from "./gallery/manifest";
 import { swJS } from "./gallery/sw";
@@ -67,6 +68,9 @@ export default {
     }
     if (pathname === "/api/formats" && m === "GET") {
       return handleFormats();
+    }
+    if (pathname === "/api/rooms" && m === "GET") {
+      return handleRooms(request, env);
     }
     // Folder routes
     if (pathname === "/api/folders") {

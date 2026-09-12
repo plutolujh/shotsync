@@ -41,7 +41,8 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
   }
 
   // Room isolation: list only the specified room, or default to "gallery".
-  const roomId = request.headers.get("x-room-id") || "gallery";
+  // Room: query param takes precedence (from PWA), header fallback (from API clients)
+  const roomId = url.searchParams.get("room") || request.headers.get("x-room-id") || "gallery";
   if (!/^[a-zA-Z0-9_-]{1,64}$/.test(roomId)) {
     return err(400, "x-room-id must be 1-64 alphanumeric chars (or omit for default gallery room)");
   }

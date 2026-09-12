@@ -30,6 +30,9 @@ function buildHTML(demo: boolean, demoEn: boolean): string {
 
   <header class="hidden" id="bar">
     <h1>shotsync</h1>
+    <select id="roomSelect" title="Room" style="background:#333;color:#eee;border:1px solid #444;border-radius:6px;padding:6px 8px;font-size:13px;cursor:pointer">
+      <option value="gallery">gallery</option>
+    </select>
     <div id="filterBar">
       <select id="typeFilter" title="Filter">
         <option value="all">${i18n[lang]["filter.all"]}</option>

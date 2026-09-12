@@ -26,7 +26,8 @@ ${maskTokenSrc}
 
 const $ = (s) => document.querySelector(s);
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1800); }
-function authHeaders() { return { authorization: "Bearer " + token }; }
+let currentRoom = "gallery";
+function authHeaders() { return { authorization: "Bearer " + token, "x-room-id": currentRoom }; }
 
 // i18n
 const I18N = { zh: ${JSON.stringify(i18n.zh)}, en: ${JSON.stringify(i18n.en)} };
@@ -75,11 +76,41 @@ async function apiOk() {
 function showGate(err) { $("#gate").classList.remove("hidden"); $("#bar").classList.add("hidden"); if (err) $("#gateErr").textContent = err; }
 function showApp() { $("#gate").classList.add("hidden"); $("#bar").classList.remove("hidden"); }
 
+async function loadRooms() {
+  try {
+    const res = await fetch("/api/rooms", { headers: authHeaders() });
+    if (!res.ok) return;
+    const { rooms } = await res.json();
+    const sel = $("#roomSelect");
+    const cur = currentRoom;
+    sel.innerHTML = "";
+    for (const r of rooms) {
+      const opt = document.createElement("option");
+      opt.value = r; opt.textContent = r;
+      if (r === cur) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.onchange = () => {
+      currentRoom = sel.value;
+      currentRoomId = sel.value;
+      localStorage.setItem("shotsync_room", currentRoom);
+      initFeed();
+    };
+    // Restore saved room
+    const saved = localStorage.getItem("shotsync_room");
+    if (saved && rooms.includes(saved)) {
+      currentRoom = saved;
+      currentRoomId = saved;
+      sel.value = saved;
+    }
+  } catch {}
+}
+
 $("#tokenSave").onclick = async () => {
   token = $("#tokenInput").value.trim();
   if (!token) return;
   localStorage.setItem("${TOKEN_KEY}", token);
-  if (await apiOk()) { showApp(); setupUpload(); await initFeed(); }
+  if (await apiOk()) { showApp(); setupUpload(); await loadRooms(); await initFeed(); }
   else { localStorage.removeItem("${TOKEN_KEY}"); showGate(T("gate.invalid")); }
 };
 
@@ -593,7 +624,7 @@ function makeFolderCell(name) {
 
 async function deleteFolder(folder) {
   try {
-    const res = await fetch("/api/folders?room=gallery&path=" + encodeURIComponent(folder), { method: "DELETE", headers: authHeaders() });
+    const res = await fetch("/api/folders?room=" + encodeURIComponent(currentRoom) + "&path=" + encodeURIComponent(folder), { method: "DELETE", headers: authHeaders() });
     if (res.ok) {
       toast(T("folder.deleted") || "已删除文件夹");
       knownFolders.delete(folder);
@@ -632,7 +663,7 @@ $("#folderDialogCreate").onclick = async () => {
     const res = await fetch("/api/folders", {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ roomId: "gallery", path: newFolder })
+      body: JSON.stringify({ roomId: currentRoom, path: newFolder })
     });
     
     if (res.ok) {
@@ -836,7 +867,7 @@ async function enterDemo() {
 (async function boot() {
   if (DEMO) { await enterDemo(); return; }
   applyI18n();
-  if (token && await apiOk()) { showApp(); setupUpload(); await initFeed(); }
+  if (token && await apiOk()) { showApp(); setupUpload(); await loadRooms(); await initFeed(); }
   else { showGate(); }
 })();
 `;
