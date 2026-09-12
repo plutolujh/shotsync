@@ -3,9 +3,9 @@ import { canRead } from "../auth";
 import { FULL_EXTS, fullKey, thumbKey } from "../ids";
 
 // Try to find full image with one of the supported extensions
-export async function getFull(env: Env, roomId: string, id: string): Promise<R2ObjectBody | null> {
+export async function getFull(env: Env, roomId: string, id: string, folder?: string): Promise<R2ObjectBody | null> {
   for (const ext of FULL_EXTS) {
-    const obj = await env.BUCKET.get(fullKey(roomId, id, ext));
+    const obj = await env.BUCKET.get(fullKey(roomId, id, ext, folder));
     if (obj) return obj;
   }
   return null;
@@ -24,18 +24,20 @@ export async function handleImage(request: Request, env: Env, id: string): Promi
   // Check authentication
   if (!canRead(request, env)) return err(401, "unauthorized");
 
-  // Get room ID from query param
-  const roomId = new URL(request.url).searchParams.get("room") || "";
+  // Get room ID and folder from query params
+  const url = new URL(request.url);
+  const roomId = url.searchParams.get("room") || "gallery";
+  const folder = url.searchParams.get("folder") || "_root";
 
   // Get size parameter from query string
-  const size = new URL(request.url).searchParams.get("size");
+  const size = url.searchParams.get("size");
 
   let obj: R2ObjectBody | null = null;
 
   // If size=thumb is requested, try to fetch thumb
   if (size === "thumb") {
     if (roomId) {
-      obj = await env.BUCKET.get(thumbKey(roomId, id));
+      obj = await env.BUCKET.get(thumbKey(roomId, id, folder));
     }
     // Fallback: try legacy thumb format (pre-room-isolation)
     if (!obj) {
@@ -46,7 +48,7 @@ export async function handleImage(request: Request, env: Env, id: string): Promi
   // Fall back to full image if thumb not found or not requested
   if (!obj) {
     if (roomId) {
-      obj = await getFull(env, roomId, id);
+      obj = await getFull(env, roomId, id, folder);
     }
     // Fallback: try legacy full format (pre-room-isolation)
     if (!obj) {

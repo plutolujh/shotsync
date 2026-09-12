@@ -61,26 +61,50 @@ export function epochMsFromId(id: string): number {
   return INV_BASE - inv;
 }
 
-export function fullKey(roomId: string, id: string, ext: string): string {
+export function fullKey(roomId: string, id: string, ext: string, folder?: string): string {
+  if (folder && folder !== "_root") {
+    return `full/${roomId}/${folder}/${id}.${ext}`;
+  }
   return `full/${roomId}/${id}.${ext}`;
 }
 
-export function thumbKey(roomId: string, id: string): string {
+export function thumbKey(roomId: string, id: string, folder?: string): string {
+  if (folder && folder !== "_root") {
+    return `thumb/${roomId}/${folder}/${id}.jpg`;
+  }
   return `thumb/${roomId}/${id}.jpg`;
 }
 
+// Folder marker key for empty folder representation
+export function folderMarkerKey(roomId: string, folder: string): string {
+  return `folder/${roomId}/${folder}/.marker`;
+}
+
 export function idFromFullKey(key: string): string {
-  // Key format: full/<roomId>/<id>.<ext>
-  const parts = key.split("/");
-  const name = parts[parts.length - 1];
+  // Key format: full/<roomId>/<folder>/<id>.<ext> or full/<roomId>/<id>.<ext>
+  const name = key.split("/").pop() || "";
   const dot = name.lastIndexOf(".");
   return dot === -1 ? name : name.slice(0, dot);
 }
 
-export function roomIdFromKey(key: string): string {
-  // Key format: full/<roomId>/<id>.<ext> or thumb/<roomId>/<id>.jpg
+export function folderFromKey(key: string): string {
+  // Extract folder path from key
+  // Format: full/<roomId>/<folder>/<id>.<ext> or full/<roomId>/<id>.<ext>
   const parts = key.split("/");
-  return parts.length >= 3 ? parts[1] : "";
+  if (parts.length === 3) {
+    return "_root"; // No folder, root level
+  }
+  if (parts.length === 4) {
+    return parts[2]; // Single level folder
+  }
+  // Multi-level: return the folder portion
+  return parts.slice(2, -1).join("/");
+}
+
+export function roomIdFromKey(key: string): string {
+  // Key format: full/<roomId>/... or thumb/<roomId>/... or folder/<roomId>/...
+  const parts = key.split("/");
+  return parts.length >= 2 ? parts[1] : "";
 }
 
 export function randSuffix(): string {

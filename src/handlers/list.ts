@@ -1,6 +1,6 @@
 import { Env, err, json } from "../responses";
 import { canRead } from "../auth";
-import { epochMsFromId, idFromFullKey } from "../ids";
+import { epochMsFromId, idFromFullKey, folderFromKey } from "../ids";
 
 // How many text previews one list call will read inline. Bounded on purpose: a
 // pool that is entirely text would otherwise turn a single list request into
@@ -24,6 +24,8 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
   const cursor = url.searchParams.get("cursor") || undefined;
   const sort = url.searchParams.get("sort") || "newest";
   const type = url.searchParams.get("type") || "all";
+  // Folder path: "_root" for root level, or "foldername" or "folder/subfolder"
+  const folder = url.searchParams.get("folder") || "_root";
 
   // Validate sort param
   if (!["newest", "oldest", "name"].includes(sort)) {
@@ -33,6 +35,10 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
   if (!["all", "image", "text", "video", "doc"].includes(type)) {
     return err(400, "type must be all, image, text, video, or doc");
   }
+  // Validate folder path
+  if (!/^[a-zA-Z0-9_/-]{0,128}$/.test(folder)) {
+    return err(400, "invalid folder path");
+  }
 
   // Room isolation: list only the specified room, or default to "gallery".
   const roomId = request.headers.get("x-room-id") || "gallery";
@@ -40,19 +46,36 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
     return err(400, "x-room-id must be 1-64 alphanumeric chars (or omit for default gallery room)");
   }
 
+  // Build prefix based on folder path
+  const prefix = folder === "_root" ? `full/${roomId}/` : `full/${roomId}/${folder}/`;
+
   const res = await env.BUCKET.list({
-    prefix: `full/${roomId}/`,
+    prefix,
     limit,
     cursor,
     include: ["customMetadata", "httpMetadata"],
   } as R2ListOptions & { include: ("httpMetadata" | "customMetadata")[] });
 
+  // Extract subfolders from delimited prefixes
+  const subfolders = new Set<string>();
+  if (folder === "_root") {
+    for (const delimitedPrefix of res.delimitedPrefixes || []) {
+      const relativePath = delimitedPrefix.slice(`full/${roomId}/`.length);
+      const firstSegment = relativePath.split("/")[0];
+      if (firstSegment && !firstSegment.startsWith(".")) {
+        subfolders.add(firstSegment);
+      }
+    }
+  }
+
   const items = res.objects.map((o) => {
     const id = idFromFullKey(o.key);
+    const itemFolder = folderFromKey(o.key);
     return {
       id,
       key: o.key,
       roomId,
+      folder: itemFolder,
       time: epochMsFromId(id),
       contentType: o.httpMetadata?.contentType || "application/octet-stream",
       hasThumb: o.customMetadata?.hasThumb === "true",
@@ -107,5 +130,19 @@ export async function handleList(request: Request, env: Env): Promise<Response> 
   // and must not leak into the response the client caches.
   const payload = items.map(({ key: _key, ...rest }) => rest);
 
-  return json({ items: payload, cursor: res.truncated ? res.cursor : null });
+  // Calculate parent path for navigation
+  let parentPath: string | null = null;
+  if (folder !== "_root") {
+    const parts = folder.split("/");
+    parts.pop();
+    parentPath = parts.length === 0 ? "_root" : parts.join("/");
+  }
+
+  return json({
+    items: payload,
+    cursor: res.truncated ? res.cursor : null,
+    folder,
+    parentPath,
+    subfolders: [...subfolders],
+  });
 }

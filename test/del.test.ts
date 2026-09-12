@@ -26,7 +26,9 @@ describe("handleDelete", () => {
     await (env as Env).BUCKET.put(thumbKey(ROOM, "ID"), new Uint8Array([2]));
     const res = await handleDelete(req(), env as Env, "ID");
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ deleted: true });
+    const json = await res.json();
+    expect(json.deleted).toBe(true);
+    expect(json.roomId).toBe(ROOM);
     expect(await (env as Env).BUCKET.get(fullKey(ROOM, "ID", "png"))).toBeNull();
     expect(await (env as Env).BUCKET.get(thumbKey(ROOM, "ID"))).toBeNull();
   });

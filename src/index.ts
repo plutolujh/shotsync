@@ -6,6 +6,7 @@ import { handleDelete } from "./handlers/del";
 import { handleDeleteRoom } from "./handlers/delroom";
 import { handleShareCreate, handleSharedItem } from "./handlers/share";
 import { handleFormats } from "./handlers/formats";
+import { handleFolderList, handleFolderCreate, handleFolderDelete } from "./handlers/folder";
 import { galleryDemoHTML, galleryHTML } from "./gallery/page";
 import { manifestJSON } from "./gallery/manifest";
 import { swJS } from "./gallery/sw";
@@ -66,6 +67,13 @@ export default {
     }
     if (pathname === "/api/formats" && m === "GET") {
       return handleFormats();
+    }
+    // Folder routes
+    if (pathname === "/api/folders") {
+      if (m === "GET") return handleFolderList(request, env);
+      if (m === "POST") return handleFolderCreate(request, env);
+      if (m === "DELETE") return handleFolderDelete(request, env);
+      return err(405, "method not allowed");
     }
     return err(404, "not found");
   },

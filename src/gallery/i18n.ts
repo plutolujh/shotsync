@@ -14,6 +14,20 @@ const zh: Record<string, string> = {
   "header.select": "选择",
   "header.deleteSel": "删除选中",
   "header.cancel": "取消",
+  "header.newFolder": "📁 新建文件夹",
+  "header.root": "全部",
+
+  // Folder
+  "folder.create": "新建文件夹",
+  "folder.namePlaceholder": "文件夹名称",
+  "folder.createBtn": "创建",
+  "folder.cancel": "取消",
+  "folder.delete": "删除文件夹",
+  "folder.deleteConfirm": "删除文件夹？文件夹必须为空。",
+  "folder.deleteFailed": "删除失败，文件夹可能不为空",
+  "folder.deleted": "已删除文件夹",
+  "folder.rename": "重命名",
+  "folder.empty": "文件夹为空",
 
   // Compose
   "compose.placeholder": "粘贴或输入文字，发送到图池…",
@@ -83,6 +97,9 @@ const zh: Record<string, string> = {
 
   // Drop zone
   "dropzone.hint": "拖放文件上传",
+
+  // Settings
+  "settings.showFolders": "显示文件夹",
 };
 
 const en: Record<string, string> = {
@@ -99,6 +116,20 @@ const en: Record<string, string> = {
   "header.select": "Select",
   "header.deleteSel": "Delete",
   "header.cancel": "Cancel",
+  "header.newFolder": "📁 New folder",
+  "header.root": "All",
+
+  // Folder
+  "folder.create": "New folder",
+  "folder.namePlaceholder": "Folder name",
+  "folder.createBtn": "Create",
+  "folder.cancel": "Cancel",
+  "folder.delete": "Delete folder",
+  "folder.deleteConfirm": "Delete folder? Folder must be empty.",
+  "folder.deleteFailed": "Delete failed, folder may not be empty",
+  "folder.deleted": "Folder deleted",
+  "folder.rename": "Rename",
+  "folder.empty": "Folder is empty",
 
   // Compose
   "compose.placeholder": "Paste or type text to send…",
@@ -168,6 +199,9 @@ const en: Record<string, string> = {
 
   // Drop zone
   "dropzone.hint": "Drop files to upload",
+
+  // Settings
+  "settings.showFolders": "Show folders",
 };
 
 export const i18n = { zh, en };

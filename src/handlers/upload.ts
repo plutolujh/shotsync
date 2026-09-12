@@ -105,6 +105,12 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
     return err(400, "x-room-id must be 1-64 alphanumeric chars (or omit for default gallery room)");
   }
 
+  // Get folder path from header (optional, defaults to root)
+  const folder = request.headers.get("x-folder") || "_root";
+  if (!/^[a-zA-Z0-9_/-]{0,128}$/.test(folder)) {
+    return err(400, "invalid folder path");
+  }
+
   // Duck-type the File: `form.get()` returns `string | File | null`, and TS strict
   // rejects `instanceof File` on that union (TS2358), so narrow by shape instead.
   const fullEntry = form.get("full");
@@ -149,10 +155,11 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
     uploadedAt: new Date().toISOString(),
     hasThumb: String(hasThumb),
     roomId: roomId,
+    folder: folder !== "_root" ? folder : "",
   };
 
   try {
-    await env.BUCKET.put(fullKey(roomId, id, ext), cleanBlob.stream(), {
+    await env.BUCKET.put(fullKey(roomId, id, ext, folder), cleanBlob.stream(), {
       httpMetadata: { contentType: full.type },
       customMetadata: meta,
     });
@@ -163,11 +170,11 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
 
   if (hasThumb) {
     const thumb = thumbEntry as Blob;
-    await env.BUCKET.put(thumbKey(roomId, id), thumb.stream(), {
+    await env.BUCKET.put(thumbKey(roomId, id, folder), thumb.stream(), {
       httpMetadata: { contentType: "image/jpeg" },
     });
   }
 
-  console.log("upload success:", { id, roomId, ext });
-  return json({ id, roomId });
+  console.log("upload success:", { id, roomId, folder, ext });
+  return json({ id, roomId, folder });
 }
