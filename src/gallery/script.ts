@@ -446,7 +446,14 @@ function makeCell(item) {
       el.className = "txtcell"; el.textContent = item.snippet || "…";
       if (!item.snippet) contentObserver.observe(el);
       cell = el;
+    } else if (isImage) {
+      // Image in grid view: use img element with lazy thumbnail loading
+      cell = document.createElement("img");
+      cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.folder = item.folder || "_root"; cell.dataset.kind = "image";
+      cell.style.cssText = "width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;background:#222;cursor:pointer";
+      contentObserver.observe(cell);
     } else {
+      // Non-image, non-video, non-text: doc icon + name + size
       cell = document.createElement("div");
       cell.dataset.id = item.id; cell.dataset.roomId = item.roomId || ""; cell.dataset.folder = item.folder || "_root"; cell.dataset.kind = "doc";
       cell.style.cssText = "width:100%;aspect-ratio:1;border-radius:6px;background:#222;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px";
@@ -500,6 +507,7 @@ function getExtIcon(contentType) {
   if (contentType.includes("zip") || contentType.includes("archive")) return "📦";
   if (contentType.includes("html") || contentType.includes("css") || contentType.includes("javascript")) return "💻";
   if (contentType.includes("text/") || contentType.includes("json") || contentType.includes("xml")) return "📃";
+  if (contentType.includes("image/")) return "🖼";
   return "📁";
 }
 
