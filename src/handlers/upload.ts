@@ -160,7 +160,7 @@ export async function handleUpload(request: Request, env: Env): Promise<Response
 
   try {
     await env.BUCKET.put(fullKey(roomId, id, ext, folder), cleanBlob.stream(), {
-      httpMetadata: { contentType: full.type },
+      httpMetadata: { contentType: mimeType },
       customMetadata: meta,
     });
   } catch (e) {
