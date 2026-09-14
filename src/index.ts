@@ -62,8 +62,8 @@ export default {
       const id = decodeURIComponent(pathname.slice("/api/share/".length));
       return m === "POST" ? handleShareCreate(request, env, id) : err(405, "method not allowed");
     }
-    if (pathname.startsWith("/s/")) {
-      const id = decodeURIComponent(pathname.slice("/s/".length));
+    if (pathname.startsWith("/share/")) {
+      const id = decodeURIComponent(pathname.slice("/share/".length));
       return m === "GET" ? handleSharedItem(request, env, id) : err(405, "method not allowed");
     }
     if (pathname === "/api/formats" && m === "GET") {
