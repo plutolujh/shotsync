@@ -4,7 +4,7 @@ import { handleList } from "./handlers/list";
 import { handleImage } from "./handlers/image";
 import { handleDelete } from "./handlers/del";
 import { handleDeleteRoom } from "./handlers/delroom";
-import { handleShareCreate, handleSharedItem } from "./handlers/share";
+import { handleShareCreate, handleSharedItem, handlePublicItem } from "./handlers/share";
 import { handleFormats } from "./handlers/formats";
 import { handleFolderList, handleFolderCreate, handleFolderDelete } from "./handlers/folder";
 import { handleRooms } from "./handlers/rooms";
@@ -65,6 +65,10 @@ export default {
     if (pathname.startsWith("/share/")) {
       const id = decodeURIComponent(pathname.slice("/share/".length));
       return m === "GET" ? handleSharedItem(request, env, id) : err(405, "method not allowed");
+    }
+    if (pathname.startsWith("/pub/")) {
+      const id = decodeURIComponent(pathname.slice("/pub/".length));
+      return m === "GET" ? handlePublicItem(request, env, id) : err(405, "method not allowed");
     }
     if (pathname === "/api/formats" && m === "GET") {
       return handleFormats();
