@@ -35,9 +35,12 @@ export async function handleSharedItem(request: Request, env: Env, id: string): 
   return new Response(obj.body, {
     headers: {
       "content-type": obj.httpMetadata?.contentType || "application/octet-stream",
-      "cache-control": "private, max-age=3600",
+      "cache-control": "public, max-age=86400",
       "x-content-type-options": "nosniff",
       "access-control-allow-origin": "*",
+      "access-control-allow-headers": "Range",
+      "access-control-expose-headers": "Content-Length, Content-Range",
+      "content-disposition": "inline",
     },
   });
 }
