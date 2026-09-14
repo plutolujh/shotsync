@@ -64,11 +64,11 @@ export default {
     }
     if (pathname.startsWith("/share/")) {
       const id = decodeURIComponent(pathname.slice("/share/".length));
-      return m === "GET" ? handleSharedItem(request, env, id) : err(405, "method not allowed");
+      return (m === "GET" || m === "HEAD") ? handleSharedItem(request, env, id) : err(405, "method not allowed");
     }
     if (pathname.startsWith("/pub/")) {
       const id = decodeURIComponent(pathname.slice("/pub/".length));
-      return m === "GET" ? handlePublicItem(request, env, id) : err(405, "method not allowed");
+      return (m === "GET" || m === "HEAD") ? handlePublicItem(request, env, id) : err(405, "method not allowed");
     }
     if (pathname === "/api/formats" && m === "GET") {
       return handleFormats();
